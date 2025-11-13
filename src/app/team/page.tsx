@@ -33,7 +33,7 @@ const teamMembers = [
     role: "Director, Co-Founder",
     bio: "Strategic investment leader with extensive experience in portfolio development and value creation across multiple sectors.",
     linkedin: "https://www.linkedin.com/in/scott-geare-981025157/",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80",
+    image: "https://netorg15445780-my.sharepoint.com/personal/n_ndege_gngglobal_com_au/_layouts/15/onedrive.aspx?viewid=ba91211e%2Dc4e0%2D4940%2Da71c%2Db8e17b2833b5&e=5%3A8ef6d67f84bf4abd850f761064c56b49&sharingv2=true&fromShare=true&at=9&CID=9eb476eb%2D1c46%2D44bb%2D86d9%2D96929cd7ff8d&FolderCTID=0x012000794261365BFB9A47B20F0FD25EBA1A01&id=%2Fpersonal%2Fn%5Fndege%5Fgngglobal%5Fcom%5Fau%2FDocuments%2FWEB%20AND%20IT%20DEVELOPMENT%2FIAIN%20GEARE%20%2D%20CORPORATE%20SHOT%2FMTP%5F7751%2DEnhanced%2DNRcopy%2Ejpg&parent=%2Fpersonal%2Fn%5Fndege%5Fgngglobal%5Fcom%5Fau%2FDocuments%2FWEB%20AND%20IT%20DEVELOPMENT%2FIAIN%20GEARE%20%2D%20CORPORATE%20SHOT",
     specialties: ["Strategic Investment", "Portfolio Management", "Business Development"],
   },
   {
