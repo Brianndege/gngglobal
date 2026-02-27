@@ -5,15 +5,10 @@ import Link from "next/link";
 import { Menu, Transition } from "@headlessui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu as MenuIcon, X, ChevronDown, Search } from "lucide-react";
-
-interface NavItem {
-  label: string;
-  href: string;
-  children?: NavItem[];
-}
+import type { NavLink } from "@/lib/types";
 
 interface EnhancedNavigationProps {
-  items: NavItem[];
+  items: readonly NavLink[];
   logo?: React.ReactNode;
 }
 

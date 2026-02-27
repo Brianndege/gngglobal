@@ -4,7 +4,7 @@
 export interface NavLink {
   label: string;
   href: string;
-  children?: NavLink[];
+  readonly children?: readonly NavLink[];
 }
 
 /** Team member profile */

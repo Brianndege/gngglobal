@@ -62,12 +62,6 @@ export default function RootLayout({
     <html
       lang="en"
       className="scroll-smooth"
-      style={
-        {
-          "--font-playfair": "'Playfair Display', serif",
-          "--font-inter": "'Inter', sans-serif",
-        } as React.CSSProperties
-      }
     >
       <head>
         <Script

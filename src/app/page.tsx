@@ -96,7 +96,7 @@ const newsCards = [
 export default function Home() {
   return (
     <>
-      <EnhancedNavigation items={NAV_LINKS as unknown as NavItem[]} />
+      <EnhancedNavigation items={NAV_LINKS} />
 
       {/* Hero Carousel */}
       <HeroCarousel slides={heroSlides} autoplayInterval={7000} enableParallax />
@@ -175,7 +175,7 @@ export default function Home() {
             <div className="container mx-auto px-6">
               <div className="mb-12 text-center">
                 <h2 id="news-heading" className="text-3xl md:text-4xl lg:text-5xl font-bold font-playfair text-navy-700 mb-4">
-                  News &amp; Media
+                  News & Media
                 </h2>
                 <p className="text-lg md:text-xl text-charcoal-600 max-w-3xl mx-auto">
                   Latest insights and updates from GNG Global
@@ -294,11 +294,4 @@ export default function Home() {
       <Footer />
     </>
   );
-}
-
-// Local type alias for nav items (matches EnhancedNavigation's NavItem interface)
-interface NavItem {
-  label: string;
-  href: string;
-  children?: NavItem[];
 }
