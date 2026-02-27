@@ -70,7 +70,7 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-white shadow-md py-3"
+            ? "bg-white shadow-card py-3"
             : "bg-white/95 backdrop-blur-sm py-4"
         }`}
       >
@@ -80,10 +80,10 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
             <Link href="/" className="flex items-center space-x-3 group">
               {logo || (
                 <>
-                  <div className="text-2xl font-bold text-[#293d7c] tracking-tight">
+                  <div className="text-2xl font-bold font-playfair text-navy-700 tracking-tight">
                     GNG <span className="font-normal">GLOBAL</span>
                   </div>
-                  <div className="hidden sm:block text-sm text-gray-500 border-l pl-3 ml-3">
+                  <div className="hidden sm:block text-sm text-charcoal-400 border-l pl-3 ml-3">
                     Investment Group
                   </div>
                 </>
@@ -97,7 +97,7 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
                   <Menu as="div" key={item.label} className="relative">
                     {({ open }) => (
                       <>
-                        <Menu.Button className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-[#293d7c] transition-colors duration-200 py-2">
+                        <Menu.Button className="flex items-center gap-1 text-sm font-medium text-charcoal-700 hover:text-navy-700 transition-colors duration-200 py-2">
                           {item.label}
                           <ChevronDown
                             className={`w-4 h-4 transition-transform duration-200 ${
@@ -124,8 +124,8 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
                                       href={child.href}
                                       className={`block px-4 py-2 text-sm ${
                                         active
-                                          ? "bg-gray-100 text-[#293d7c]"
-                                          : "text-gray-700"
+                                          ? "bg-ivory-200 text-navy-700"
+                                          : "text-charcoal-700"
                                       }`}
                                     >
                                       {child.label}
@@ -143,7 +143,7 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
                   <Link
                     key={item.label}
                     href={item.href}
-                    className="text-sm font-medium text-gray-700 hover:text-[#293d7c] transition-colors duration-200"
+                    className="text-sm font-medium text-charcoal-700 hover:text-navy-700 transition-colors duration-200"
                   >
                     {item.label}
                   </Link>
@@ -154,7 +154,7 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
             {/* Utility Actions */}
             <div className="flex items-center gap-3">
               <button
-                className="p-2 text-gray-700 hover:text-[#293d7c] transition-colors duration-200"
+                className="p-2 text-charcoal-700 hover:text-navy-700 transition-colors duration-200"
                 aria-label="Search"
               >
                 <Search className="w-5 h-5" />
@@ -162,7 +162,7 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
 
               <Link
                 href="/contact"
-                className="hidden md:inline-block bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-6 py-2 rounded-md transition-colors duration-300"
+                className="hidden md:inline-block bg-gold hover:bg-gold-600 text-white font-semibold px-6 py-2 rounded-md transition-colors duration-300"
               >
                 Contact Us
               </Link>
@@ -170,7 +170,7 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
               {/* Mobile Menu Toggle */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden p-2 text-gray-700 hover:text-[#293d7c] transition-colors duration-200"
+                className="lg:hidden p-2 text-charcoal-700 hover:text-navy-700 transition-colors duration-200"
                 aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={isMobileMenuOpen}
               >
@@ -213,7 +213,7 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
                 <div className="flex justify-end mb-6">
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-2 text-gray-700 hover:text-[#293d7c] transition-colors duration-200"
+                    className="p-2 text-charcoal-700 hover:text-navy-700 transition-colors duration-200"
                     aria-label="Close menu"
                     tabIndex={0}
                   >
@@ -232,7 +232,7 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
                             onKeyDown={(e) =>
                               handleKeyDown(e, () => toggleMobileSubmenu(item.label))
                             }
-                            className="w-full flex items-center justify-between p-3 text-left text-gray-900 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                            className="w-full flex items-center justify-between p-3 text-left text-charcoal-900 hover:bg-ivory-200 rounded-md transition-colors duration-200"
                             aria-expanded={expandedMobileItems.has(item.label)}
                           >
                             <span className="font-medium">{item.label}</span>
@@ -258,7 +258,7 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
                                       key={child.label}
                                       href={child.href}
                                       onClick={() => setIsMobileMenuOpen(false)}
-                                      className="block p-3 text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                                      className="block p-3 text-charcoal-700 hover:bg-ivory-200 rounded-md transition-colors duration-200"
                                     >
                                       {child.label}
                                     </Link>
@@ -272,7 +272,7 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
                         <Link
                           href={item.href}
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className="block p-3 text-gray-900 hover:bg-gray-100 rounded-md transition-colors duration-200 font-medium"
+                          className="block p-3 text-charcoal-900 hover:bg-ivory-200 rounded-md transition-colors duration-200 font-medium"
                         >
                           {item.label}
                         </Link>
@@ -286,7 +286,7 @@ export default function EnhancedNavigation({ items, logo }: EnhancedNavigationPr
                   <Link
                     href="/contact"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="block w-full text-center bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-6 py-3 rounded-md transition-colors duration-300"
+                    className="block w-full text-center bg-gold hover:bg-gold-600 text-white font-semibold px-6 py-3 rounded-md transition-colors duration-300"
                   >
                     Contact Us
                   </Link>

@@ -1,10 +1,18 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import HeroCarousel from "@/components/HeroCarousel";
 import EnhancedNavigation from "@/components/EnhancedNavigation";
 import { ScrollReveal, StaggeredGrid, ParallaxSection } from "@/components/ScrollReveal";
 import AnimatedCardGrid from "@/components/AnimatedCardGrid";
 import Footer from "@/components/Footer";
+import { NAV_LINKS } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "GNG Global Investment Group - Investment Firm Perth, Australia",
+  description:
+    "GNG Global Investment Group is an investment firm founded in Perth, Australia with strategic investments across healthcare, property, media, and financial services.",
+};
 
 const heroSlides = [
   {
@@ -37,24 +45,6 @@ const heroSlides = [
     ctaLink: "/portfolio",
     overlay: "dark" as const,
   },
-];
-
-const navItems = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  {
-    label: "Portfolio",
-    href: "/portfolio",
-    children: [
-      { label: "All Companies", href: "/portfolio" },
-      { label: "GNG Healthcare Group", href: "/portfolio/healthcare" },
-      { label: "GNG Property Group", href: "/portfolio/property" },
-      { label: "Scenes", href: "/portfolio/scenes" },
-    ],
-  },
-  { label: "News & Media", href: "/news" },
-  { label: "Team", href: "/team" },
-  { label: "Contact", href: "/contact" },
 ];
 
 const portfolioCards = [
@@ -106,7 +96,7 @@ const newsCards = [
 export default function Home() {
   return (
     <>
-      <EnhancedNavigation items={navItems} />
+      <EnhancedNavigation items={NAV_LINKS as unknown as NavItem[]} />
 
       {/* Hero Carousel */}
       <HeroCarousel slides={heroSlides} autoplayInterval={7000} enableParallax />
@@ -114,21 +104,24 @@ export default function Home() {
       <main className="min-h-screen">
         {/* Value Exchange Section */}
         <ScrollReveal direction="up">
-          <section className="py-16 md:py-24 bg-gray-50">
+          <section className="py-16 md:py-24 bg-ivory-200" aria-labelledby="value-exchange-heading">
             <div className="container mx-auto px-6">
               <div className="max-w-5xl mx-auto">
                 <ParallaxSection speed={0.3}>
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#293d7c] mb-8 text-center">
+                  <h2
+                    id="value-exchange-heading"
+                    className="text-3xl md:text-4xl lg:text-5xl font-bold font-playfair text-navy-700 mb-8 text-center"
+                  >
                     The GNG Value Exchange
                   </h2>
                 </ParallaxSection>
 
                 <ScrollReveal direction="scale" delay={0.2}>
-                  <div className="bg-white p-8 md:p-12 rounded-lg shadow-sm border border-gray-200">
-                    <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-6">
+                  <div className="bg-white p-8 md:p-12 rounded-lg shadow-card border border-ivory-400">
+                    <p className="text-lg md:text-xl text-charcoal-700 leading-relaxed mb-6">
                       We believe, using our proprietary framework called The GNG Value Exchange, we are able to generate long-term and mutually beneficial outcomes for our clients and portfolio companies.
                     </p>
-                    <p className="text-gray-600">
+                    <p className="text-charcoal-600">
                       Using this framework, we invest to create sustainable value that drives strong economic, environmental and social outcomes, complemented by the philanthropic work of GNG Charity Trust.
                     </p>
                   </div>
@@ -139,14 +132,14 @@ export default function Home() {
         </ScrollReveal>
 
         {/* Portfolio Section */}
-        <section id="portfolio" className="py-16 md:py-24">
+        <section id="portfolio" className="py-16 md:py-24" aria-labelledby="portfolio-heading">
           <div className="container mx-auto px-6">
             <ScrollReveal direction="up">
               <div className="mb-12 text-center">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#293d7c] mb-4">
+                <h2 id="portfolio-heading" className="text-3xl md:text-4xl lg:text-5xl font-bold font-playfair text-navy-700 mb-4">
                   Our Portfolio
                 </h2>
-                <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                <p className="text-lg md:text-xl text-charcoal-600 max-w-3xl mx-auto">
                   Strategic investments across multiple sectors creating sustainable value
                 </p>
               </div>
@@ -166,7 +159,7 @@ export default function Home() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-[#293d7c] text-[#293d7c] hover:bg-[#293d7c] hover:text-white transition-all duration-300"
+                    className="border-navy-700 text-navy-700 hover:bg-navy-700 hover:text-white transition-all duration-300"
                   >
                     View All Portfolio Companies
                   </Button>
@@ -178,13 +171,13 @@ export default function Home() {
 
         {/* News Section */}
         <ScrollReveal direction="up">
-          <section id="news" className="py-16 md:py-24 bg-gray-50">
+          <section id="news" className="py-16 md:py-24 bg-ivory-200" aria-labelledby="news-heading">
             <div className="container mx-auto px-6">
               <div className="mb-12 text-center">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#293d7c] mb-4">
-                  News & Media
+                <h2 id="news-heading" className="text-3xl md:text-4xl lg:text-5xl font-bold font-playfair text-navy-700 mb-4">
+                  News &amp; Media
                 </h2>
-                <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                <p className="text-lg md:text-xl text-charcoal-600 max-w-3xl mx-auto">
                   Latest insights and updates from GNG Global
                 </p>
               </div>
@@ -203,7 +196,7 @@ export default function Home() {
                     <Button
                       size="lg"
                       variant="outline"
-                      className="border-[#293d7c] text-[#293d7c] hover:bg-[#293d7c] hover:text-white transition-all duration-300"
+                      className="border-navy-700 text-navy-700 hover:bg-navy-700 hover:text-white transition-all duration-300"
                     >
                       View All News
                     </Button>
@@ -216,31 +209,34 @@ export default function Home() {
 
         {/* Team Preview */}
         <ParallaxSection speed={0.2}>
-          <section id="team" className="py-16 md:py-24 bg-[#293d7c] text-white relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-transparent" />
+          <section id="team" className="py-16 md:py-24 bg-navy-700 text-white relative overflow-hidden" aria-labelledby="team-heading">
+            <div className="absolute inset-0 opacity-10" aria-hidden="true">
+              <div className="absolute inset-0 bg-gradient-to-br from-gold to-transparent" />
             </div>
 
             <div className="container mx-auto px-6 relative z-10">
               <ScrollReveal direction="down">
                 <div className="mb-12 text-center">
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+                  <h2 id="team-heading" className="text-3xl md:text-4xl lg:text-5xl font-bold font-playfair mb-4">
                     Our Team
                   </h2>
-                  <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+                  <p className="text-lg md:text-xl text-ivory-300 max-w-3xl mx-auto">
                     Leadership committed to creating long-term value for our clients and portfolio companies
                   </p>
                 </div>
               </ScrollReveal>
 
               <StaggeredGrid pattern="grid" className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                {["Scott Geare", "Newton Ndege", "Iain Geare", "Daniel Ngetich"].map((name, idx) => (
+                {[
+                  { name: "Scott Geare", role: "Director, Co-Founder" },
+                  { name: "Newton Ndege", role: "Director" },
+                  { name: "Iain Geare", role: "Director, Co-Founder" },
+                  { name: "Daniel Ngetich", role: "Director, Principal Consultant" },
+                ].map(({ name, role }) => (
                   <div key={name} className="text-center">
-                    <div className="w-32 h-32 bg-gray-600 rounded-full mx-auto mb-4" />
+                    <div className="w-32 h-32 bg-navy-600 rounded-full mx-auto mb-4" aria-hidden="true" />
                     <h3 className="text-xl font-bold mb-1">{name}</h3>
-                    <p className="text-gray-300 text-sm mb-2">
-                      {idx === 0 || idx === 2 ? "Director, Co-Founder" : idx === 3 ? "Director, Principal Consultant" : "Director"}
-                    </p>
+                    <p className="text-ivory-300 text-sm mb-2">{role}</p>
                   </div>
                 ))}
               </StaggeredGrid>
@@ -251,7 +247,7 @@ export default function Home() {
                     <Button
                       size="lg"
                       variant="outline"
-                      className="border-white text-white hover:bg-white hover:text-[#293d7c] transition-all duration-300"
+                      className="border-white text-white hover:bg-white hover:text-navy-700 transition-all duration-300"
                     >
                       Meet the Full Team
                     </Button>
@@ -264,18 +260,18 @@ export default function Home() {
 
         {/* Contact CTA */}
         <ScrollReveal direction="up">
-          <section id="contact" className="py-16 md:py-24">
+          <section id="contact" className="py-16 md:py-24" aria-labelledby="cta-heading">
             <div className="container mx-auto px-6">
               <div className="max-w-4xl mx-auto text-center">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#293d7c] mb-6">
+                <h2 id="cta-heading" className="text-3xl md:text-4xl lg:text-5xl font-bold font-playfair text-navy-700 mb-6">
                   Get in Touch
                 </h2>
-                <p className="text-lg md:text-xl text-gray-600 mb-8">
+                <p className="text-lg md:text-xl text-charcoal-600 mb-8">
                   Interested in learning more about our investment opportunities? Contact us today.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link href="/contact">
-                    <Button size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 transition-all duration-300">
+                    <Button size="lg" className="bg-gold hover:bg-gold-600 text-white px-8 transition-all duration-300">
                       Contact Us
                     </Button>
                   </Link>
@@ -283,7 +279,7 @@ export default function Home() {
                     <Button
                       size="lg"
                       variant="outline"
-                      className="border-[#293d7c] text-[#293d7c] hover:bg-[#293d7c] hover:text-white px-8 transition-all duration-300"
+                      className="border-navy-700 text-navy-700 hover:bg-navy-700 hover:text-white px-8 transition-all duration-300"
                     >
                       View Portfolio
                     </Button>
@@ -298,4 +294,11 @@ export default function Home() {
       <Footer />
     </>
   );
+}
+
+// Local type alias for nav items (matches EnhancedNavigation's NavItem interface)
+interface NavItem {
+  label: string;
+  href: string;
+  children?: NavItem[];
 }
