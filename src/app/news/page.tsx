@@ -4,29 +4,14 @@ import LegalHero from "@/components/LegalHero";
 import { ScrollReveal, StaggeredGrid } from "@/components/ScrollReveal";
 import { Calendar, Tag, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { navItems } from "@/lib/constants";
 
 export const metadata = {
   title: "News & Media - GNG Global Investment Group",
   description: "Latest insights, updates, and thought leadership from GNG Global Investment Group.",
 };
 
-const navItems = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  {
-    label: "Portfolio",
-    href: "/portfolio",
-    children: [
-      { label: "All Companies", href: "/portfolio" },
-      { label: "GNG Healthcare Group", href: "/portfolio/healthcare" },
-      { label: "GNG Property Group", href: "/portfolio/property" },
-      { label: "Scenes", href: "/portfolio/scenes" },
-    ],
-  },
-  { label: "News & Media", href: "/news" },
-  { label: "Team", href: "/team" },
-  { label: "Contact", href: "/contact" },
-];
+
 
 const featuredArticle = {
   id: "kenya-visit",

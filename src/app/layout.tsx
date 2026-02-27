@@ -1,26 +1,37 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import ClientBody from "./ClientBody";
-import Script from "next/script";
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  display: "swap",
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
-  title: "GNG Global Investment Group - Investment Firm Perth, Australia",
-  description: "GNG Global Investment Group is an investment firm founded in Perth, Australia. We have strategic investments in healthcare, media, financial services, and advisory services, using our proprietary GNG Value Exchange framework.",
+  title: {
+    default: "GNG Global Investment Group - Investment Firm Perth, Australia",
+    template: "%s | GNG Global Investment Group",
+  },
+  description:
+    "GNG Global Investment Group is an investment firm founded in Perth, Australia. We have strategic investments in healthcare, media, financial services, and advisory services, using our proprietary GNG Value Exchange framework.",
+  keywords: [
+    "investment firm",
+    "Perth",
+    "Australia",
+    "GNG Global",
+    "healthcare investment",
+    "property investment",
+    "GNG Value Exchange",
+  ],
+  authors: [{ name: "GNG Global Investment Group" }],
+  openGraph: {
+    type: "website",
+    locale: "en_AU",
+    url: "https://gngglobal.com.au",
+    siteName: "GNG Global Investment Group",
+    title: "GNG Global Investment Group - Investment Firm Perth, Australia",
+    description:
+      "Strategic investments in healthcare, media, financial services, and advisory services using the proprietary GNG Value Exchange framework.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -29,11 +40,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable} scroll-smooth`}>
+    <html lang="en" className="scroll-smooth">
       <head>
-        <Script
-          crossOrigin="anonymous"
-          src="//unpkg.com/same-runtime/dist/index.global.js"
+        {/* Google Fonts - loaded at runtime to avoid build-time network dependency */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
         />
       </head>
       <body suppressHydrationWarning className="antialiased">

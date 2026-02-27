@@ -8,37 +8,37 @@ import { CheckCircle2, ArrowRight } from "lucide-react";
 import { navItems } from "@/lib/constants";
 
 export const metadata = {
-  title: "GNG Healthcare Group - GNG Global Investment Group",
+  title: "Scenes - GNG Global Investment Group",
   description:
-    "Comprehensive healthcare and healthcare systems provider spanning NDIS services, aged care, and allied health across Western Australia.",
+    "Digital content company helping clients enhance their brand through integrated and interactive marketing campaigns.",
 };
 
 
 
-const services = [
+const capabilities = [
   {
-    title: "NDIS Scheme Disability Services",
+    title: "Brand Development",
     description:
-      "Comprehensive support services for participants of the National Disability Insurance Scheme, tailored to individual needs and goals.",
+      "Strategic brand development and positioning that helps clients stand out in competitive markets and build lasting brand equity.",
   },
   {
-    title: "Residential Aged-Care Services",
+    title: "Integrated Marketing Campaigns",
     description:
-      "High-quality residential care for seniors, providing a safe, comfortable, and supportive living environment.",
+      "End-to-end campaign management across multiple channels, delivering cohesive messaging that resonates with target audiences.",
   },
   {
-    title: "Allied Health Services",
+    title: "Digital Content Creation",
     description:
-      "A wide range of allied health professionals delivering physiotherapy, occupational therapy, speech pathology, and more.",
+      "High-quality digital content including video, photography, copywriting, and social media content that engages and converts.",
   },
   {
-    title: "Community Nursing Care",
+    title: "Interactive Media Solutions",
     description:
-      "Professional nursing care delivered directly to clients in their homes and communities across Western Australia.",
+      "Innovative interactive experiences including web, mobile, and emerging technologies that create meaningful brand interactions.",
   },
 ];
 
-export default function HealthcarePage() {
+export default function ScenesPage() {
   return (
     <div className="min-h-screen flex flex-col bg-ivory-50">
       <EnhancedNavigation items={navItems} />
@@ -46,9 +46,9 @@ export default function HealthcarePage() {
       <main className="flex-grow">
         {/* Hero Section */}
         <LegalHero
-          title="GNG Healthcare Group"
-          subtitle="Comprehensive healthcare and healthcare systems provider spanning NDIS services, aged care, and allied health across Western Australia"
-          image="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1920&q=90"
+          title="Scenes"
+          subtitle="Digital content company helping clients enhance their brand through integrated and interactive marketing campaigns"
+          image="https://images.unsplash.com/photo-1533750516457-a7f992034fec?w=1920&q=90"
           height="lg"
         />
 
@@ -62,7 +62,7 @@ export default function HealthcarePage() {
                     Overview
                   </span>
                   <h2 className="font-playfair text-4xl md:text-5xl font-bold text-navy-800 mt-6 mb-6">
-                    Committed to Holistic Well-Being
+                    Elevating Brands Through Storytelling
                   </h2>
                   <div className="w-24 h-1 bg-gold mx-auto mb-8" />
                 </div>
@@ -71,14 +71,15 @@ export default function HealthcarePage() {
               <ScrollReveal direction="scale" delay={0.2}>
                 <div className="bg-ivory-50 p-10 rounded-lg border border-ivory-300 shadow-sm mb-10">
                   <p className="font-inter text-xl text-charcoal-700 leading-relaxed mb-6 text-center">
-                    As a subsidiary of GNG Global Investment Group, we stand proud as a
-                    comprehensive healthcare and healthcare systems provider. Our services span from
-                    NDIS Scheme Disability Services to Residential Aged-Care with a commitment to
-                    holistic well-being.
+                    Scenes is a digital content company that helps clients enhance their brand
+                    through integrated and interactive marketing campaigns. As part of the GNG
+                    Global Investment Group portfolio, Scenes brings a strategic approach to
+                    creative media.
                   </p>
                   <p className="font-inter text-lg text-charcoal-600 leading-relaxed text-center">
-                    Serving communities across Perth, Bunbury, Albany, and Mandurah in Western
-                    Australia.
+                    We combine compelling storytelling with data-driven strategies to create
+                    content that drives engagement, builds brand loyalty, and delivers measurable
+                    results.
                   </p>
                 </div>
               </ScrollReveal>
@@ -89,7 +90,9 @@ export default function HealthcarePage() {
                     <div className="text-sm font-inter font-semibold text-charcoal-500 uppercase tracking-wider mb-2">
                       Sector
                     </div>
-                    <div className="font-playfair text-xl font-bold text-navy-800">Healthcare</div>
+                    <div className="font-playfair text-xl font-bold text-navy-800">
+                      Media &amp; Digital Content
+                    </div>
                   </div>
                   <div className="bg-white p-6 rounded-lg border border-ivory-300 shadow-sm">
                     <div className="text-sm font-inter font-semibold text-charcoal-500 uppercase tracking-wider mb-2">
@@ -97,26 +100,11 @@ export default function HealthcarePage() {
                     </div>
                     <div className="font-playfair text-xl font-bold text-navy-800">2023</div>
                   </div>
-                  <div className="bg-white p-6 rounded-lg border border-ivory-300 shadow-sm">
+                  <div className="bg-white p-6 rounded-lg border border-ivory-300 shadow-sm sm:col-span-2">
                     <div className="text-sm font-inter font-semibold text-charcoal-500 uppercase tracking-wider mb-2">
-                      Locations
+                      Location
                     </div>
-                    <div className="font-playfair text-xl font-bold text-navy-800">
-                      Perth, Bunbury, Albany, Mandurah
-                    </div>
-                  </div>
-                  <div className="bg-white p-6 rounded-lg border border-ivory-300 shadow-sm">
-                    <div className="text-sm font-inter font-semibold text-charcoal-500 uppercase tracking-wider mb-2">
-                      Website
-                    </div>
-                    <a
-                      href="https://gnghealthcare.com.au/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-inter text-gold hover:text-gold-700 transition-colors font-semibold"
-                    >
-                      gnghealthcare.com.au ↗
-                    </a>
+                    <div className="font-playfair text-xl font-bold text-navy-800">Australia</div>
                   </div>
                 </div>
               </ScrollReveal>
@@ -124,25 +112,25 @@ export default function HealthcarePage() {
           </div>
         </section>
 
-        {/* Services */}
+        {/* Capabilities */}
         <section className="py-20 md:py-28 bg-ivory-50">
           <div className="container mx-auto px-6">
             <div className="max-w-6xl mx-auto">
               <ScrollReveal direction="up">
                 <div className="text-center mb-16">
                   <h2 className="font-playfair text-4xl md:text-5xl font-bold text-navy-800 mb-6">
-                    Our Services
+                    Our Capabilities
                   </h2>
                   <div className="w-24 h-1 bg-gold mx-auto mb-8" />
                   <p className="font-inter text-xl text-charcoal-600 max-w-3xl mx-auto">
-                    Comprehensive care solutions delivered with compassion and professionalism
+                    Creative and strategic digital media solutions for modern brands
                   </p>
                 </div>
               </ScrollReveal>
 
               <div className="grid md:grid-cols-2 gap-8">
-                {services.map((service, idx) => (
-                  <ScrollReveal key={service.title} direction="up" delay={idx * 0.1}>
+                {capabilities.map((item, idx) => (
+                  <ScrollReveal key={item.title} direction="up" delay={idx * 0.1}>
                     <div className="group bg-white p-8 rounded-lg border border-ivory-300 shadow-sm hover:border-gold/50 hover:shadow-md transition-all duration-300">
                       <div className="flex items-start gap-4">
                         <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-gold/20 to-gold/5 rounded-full flex items-center justify-center mt-0.5">
@@ -150,10 +138,10 @@ export default function HealthcarePage() {
                         </div>
                         <div>
                           <h3 className="font-playfair text-xl font-bold text-navy-800 mb-3 group-hover:text-navy-900 transition-colors">
-                            {service.title}
+                            {item.title}
                           </h3>
                           <p className="font-inter text-charcoal-600 leading-relaxed">
-                            {service.description}
+                            {item.description}
                           </p>
                         </div>
                       </div>
@@ -171,23 +159,23 @@ export default function HealthcarePage() {
             <ScrollReveal direction="scale">
               <div className="max-w-4xl mx-auto text-center">
                 <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-6">
-                  Learn More About GNG Healthcare
+                  Elevate Your Brand with Scenes
                 </h2>
                 <div className="w-24 h-1 bg-gold mx-auto mb-8" />
                 <p className="font-inter text-xl text-ivory-200 mb-10 leading-relaxed">
-                  Visit the GNG Healthcare Group website to learn more about our comprehensive
-                  healthcare services across Western Australia.
+                  Interested in working with Scenes to enhance your brand presence? Get in touch
+                  with our team to discuss how we can help.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a
-                    href="https://gnghealthcare.com.au/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-10 py-4 bg-gold hover:bg-gold-600 text-navy-900 font-inter font-semibold rounded-md transition-all duration-300 hover:shadow-xl"
-                  >
-                    Visit Website
-                    <ArrowRight className="w-5 h-5" />
-                  </a>
+                  <Link href="/contact">
+                    <Button
+                      size="lg"
+                      className="bg-gold hover:bg-gold-600 text-navy-900 font-inter font-semibold px-10"
+                    >
+                      Get in Touch
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </Button>
+                  </Link>
                   <Link href="/portfolio">
                     <Button
                       size="lg"

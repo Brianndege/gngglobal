@@ -3,29 +3,14 @@ import Footer from "@/components/Footer";
 import LegalHero from "@/components/LegalHero";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Shield, Scale, Handshake, Award, TrendingUp, Users, Globe, Target } from "lucide-react";
+import { navItems } from "@/lib/constants";
 
 export const metadata = {
   title: "About Us - GNG Global Investment Group",
   description: "Trusted investment expertise for modern business challenges. Learn about GNG Global's legacy, values, and proprietary framework.",
 };
 
-const navItems = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  {
-    label: "Portfolio",
-    href: "/portfolio",
-    children: [
-      { label: "All Companies", href: "/portfolio" },
-      { label: "GNG Healthcare Group", href: "/portfolio/healthcare" },
-      { label: "GNG Property Group", href: "/portfolio/property" },
-      { label: "Scenes", href: "/portfolio/scenes" },
-    ],
-  },
-  { label: "News & Media", href: "/news" },
-  { label: "Team", href: "/team" },
-  { label: "Contact", href: "/contact" },
-];
+
 
 export default function AboutPage() {
   return (
