@@ -1,0 +1,105 @@
+/* Keen Slider Styles */
+@import "keen-slider/keen-slider.min.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 38% 98%;
+    --foreground: 218 29% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 218 29% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 218 29% 18%;
+    --primary: 223 51% 30%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 220 29% 96%;
+    --secondary-foreground: 218 29% 18%;
+    --muted: 220 24% 94%;
+    --muted-foreground: 216 14% 40%;
+    --accent: 36 35% 56%;
+    --accent-foreground: 223 51% 22%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 16% 88%;
+    --input: 220 16% 88%;
+    --ring: 223 51% 30%;
+    --radius: 0.75rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 222 47% 10%;
+    --foreground: 210 20% 96%;
+    --card: 222 44% 12%;
+    --card-foreground: 210 20% 96%;
+    --popover: 222 44% 12%;
+    --popover-foreground: 210 20% 96%;
+    --primary: 36 35% 56%;
+    --primary-foreground: 222 47% 10%;
+    --secondary: 222 32% 18%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 222 32% 18%;
+    --muted-foreground: 215 20% 75%;
+    --accent: 223 51% 30%;
+    --accent-foreground: 210 20% 96%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 223 23% 24%;
+    --input: 223 23% 24%;
+    --ring: 36 35% 56%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-inter antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-playfair text-balance;
+    line-height: 1.2;
+  }
+
+  p {
+    @apply text-pretty;
+  }
+
+  a {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  :focus-visible {
+    @apply rounded-sm outline-none ring-2 ring-ring ring-offset-2;
+  }
+
+  ::selection {
+    @apply bg-gold/25 text-navy-900;
+  }
+
+  section {
+    scroll-margin-top: 6rem;
+  }
+}
