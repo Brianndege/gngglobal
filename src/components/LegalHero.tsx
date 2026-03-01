@@ -34,11 +34,10 @@ export default function LegalHero({ title, subtitle, image, height = "md" }: Leg
         </div>
       </ParallaxSection>
 
-      {/* Elegant Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-navy-900/90 via-navy-800/85 to-charcoal-900/80" />
-
-      {/* Subtle Texture Overlay */}
-      <div className="absolute inset-0 opacity-[0.03] mix-blend-multiply bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMSI+PHBhdGggZD0iTTM2IDE0YzIuMjEgMCA0IDEuNzkgNCA0cy0xLjc5IDQtNCA0LTQtMS43OS00LTQgMS43OS00IDQtNG0wIDI4YzIuMjEgMCA0IDEuNzkgNCA0cy0xLjc5IDQtNCA0LTQtMS43OS00LTQgMS43OS00IDQtNHpNMCAzNmMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHptMjggMGMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-navy-950/92 via-navy-900/86 to-charcoal-900/88" />
+      <div className="premium-soft-radial" />
+      <div className="premium-hero-symbols" />
+      <div className="absolute inset-0 opacity-[0.06] mix-blend-soft-light bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_28%),radial-gradient(circle_at_80%_70%,rgba(255,255,255,0.22),transparent_34%)]" />
 
       {/* Content */}
       <div className="relative h-full flex items-center">
@@ -47,13 +46,13 @@ export default function LegalHero({ title, subtitle, image, height = "md" }: Leg
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-            className="max-w-4xl mx-auto text-center text-white"
+            className="max-w-4xl mx-auto text-center text-white premium-glass-panel px-8 py-10 md:px-12 md:py-12"
           >
             <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
               {title}
             </h1>
             {subtitle && (
-              <p className="font-inter text-lg md:text-xl text-ivory-200 leading-relaxed max-w-3xl mx-auto">
+              <p className="font-inter text-lg md:text-xl text-ivory-100/95 leading-relaxed max-w-3xl mx-auto">
                 {subtitle}
               </p>
             )}
@@ -62,7 +61,7 @@ export default function LegalHero({ title, subtitle, image, height = "md" }: Leg
       </div>
 
       {/* Bottom Gradient Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-ivory-50 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-36 bg-gradient-to-t from-[#f5f7fa] to-transparent" />
     </section>
   );
 }

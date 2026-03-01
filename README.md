@@ -49,6 +49,31 @@ bun run build
 
 Open [http://localhost:3000](http://localhost:3000) to view the prototype.
 
+## CMS Integration (Dynamic News)
+
+The `news` page now supports dynamic posts from a standalone CMS API.
+
+1. Set frontend environment variable:
+
+```bash
+NEXT_PUBLIC_CMS_API_URL=http://localhost:8080
+```
+
+2. Run CMS backend from `cms-api/`:
+
+```bash
+npm install
+cp .env.example .env
+npm run seed:admin
+npm run dev
+```
+
+3. Open admin panel routes:
+
+- `/admin/login`
+- `/admin/dashboard`
+- `/admin/posts/new`
+- `/admin/posts/edit/:id`
 ## Project Structure
 
 ```

@@ -89,16 +89,16 @@ const newsCards = [
 
 export default function Home() {
   return (
-    <>
+    <div className="premium-site-shell premium-site-shell--calm">
       <EnhancedNavigation items={primaryNavItems} />
 
       {/* Hero Carousel */}
       <HeroCarousel slides={heroSlides} autoplayInterval={7000} enableParallax />
 
-      <main id="main-content" className="min-h-screen">
+      <main id="main-content" className="min-h-screen premium-page-main">
         {/* Value Exchange Section */}
         <ScrollReveal direction="up">
-          <section className="py-16 md:py-24 bg-gray-50">
+          <section className="py-16 md:py-24 section-premium-neutral section-premium-divider">
             <div className="container mx-auto px-6">
               <div className="max-w-5xl mx-auto">
                 <ParallaxSection speed={0.3}>
@@ -108,7 +108,7 @@ export default function Home() {
                 </ParallaxSection>
 
                 <ScrollReveal direction="scale" delay={0.2}>
-                  <div className="bg-white p-8 md:p-12 rounded-lg shadow-sm border border-gray-200">
+                  <div className="premium-glass-panel p-8 md:p-12">
                     <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-6">
                       We believe, using our proprietary framework called The GNG Value Exchange, we are able to generate long-term and mutually beneficial outcomes for our clients and portfolio companies.
                     </p>
@@ -123,7 +123,7 @@ export default function Home() {
         </ScrollReveal>
 
         {/* Portfolio Section */}
-        <section id="portfolio" className="py-16 md:py-24">
+        <section id="portfolio" className="py-16 md:py-24 section-premium-light">
           <div className="container mx-auto px-6">
             <ScrollReveal direction="up">
               <div className="mb-12 text-center">
@@ -162,7 +162,7 @@ export default function Home() {
 
         {/* News Section */}
         <ScrollReveal direction="up">
-          <section id="news" className="py-16 md:py-24 bg-gray-50">
+          <section id="news" className="py-16 md:py-24 section-premium-neutral section-premium-divider">
             <div className="container mx-auto px-6">
               <div className="mb-12 text-center">
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#293d7c] mb-4">
@@ -200,10 +200,8 @@ export default function Home() {
 
         {/* Team Preview */}
         <ParallaxSection speed={0.2}>
-          <section id="team" className="py-16 md:py-24 bg-[#293d7c] text-white relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-transparent" />
-            </div>
+          <section id="team" className="py-16 md:py-24 section-premium-dark relative overflow-hidden">
+            <div className="absolute inset-0 opacity-[0.12] premium-hero-symbols" />
 
             <div className="container mx-auto px-6 relative z-10">
               <ScrollReveal direction="down">
@@ -260,7 +258,7 @@ export default function Home() {
 
         {/* Contact CTA */}
         <ScrollReveal direction="up">
-          <section id="contact" className="py-16 md:py-24">
+          <section id="contact" className="py-16 md:py-24 section-premium-light">
             <div className="container mx-auto px-6">
               <div className="max-w-4xl mx-auto text-center">
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#293d7c] mb-6">
@@ -292,6 +290,6 @@ export default function Home() {
       </main>
 
       <Footer />
-    </>
+    </div>
   );
 }

@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle2 } from "lucide-react";
 import { primaryNavItems } from "@/lib/site";
 import Link from "next/link";
+import { getCmsApiBaseUrl } from "@/lib/cms";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -23,7 +24,9 @@ export default function ContactPage() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Partial<Record<keyof typeof formData, string>>>({});
+  const apiBaseUrl = useMemo(() => getCmsApiBaseUrl(), []);
 
   const validateForm = () => {
     const nextErrors: Partial<Record<keyof typeof formData, string>> = {};
@@ -48,23 +51,47 @@ export default function ContactPage() {
     return Object.keys(nextErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
+
     if (!validateForm()) {
       return;
     }
 
     setIsSubmitting(true);
-    // In production, this would send to an API endpoint
-    setTimeout(() => {
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          source: "contact-page",
+          website: "",
+        }),
+      });
+
+      const data = (await response.json().catch(() => ({}))) as { message?: string };
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Unable to send your message right now. Please try again.");
+      }
+
       setSubmitted(true);
-      setIsSubmitting(false);
       setTimeout(() => {
         setSubmitted(false);
+        setSubmitError(null);
         setErrors({});
         setFormData({ name: "", email: "", phone: "", company: "", message: "" });
       }, 5000);
-    }, 1500);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Unable to send your message right now. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -84,10 +111,10 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-ivory-50">
+    <div className="premium-site-shell premium-site-shell--calm">
       <EnhancedNavigation items={primaryNavItems} />
 
-      <main id="main-content" className="flex-grow">
+      <main id="main-content" className="premium-page-main">
         {/* Hero Section */}
         <LegalHero
           title="Let's Start the Conversation"
@@ -97,7 +124,7 @@ export default function ContactPage() {
         />
 
         {/* Contact Form & Information */}
-        <section className="py-20 md:py-32 bg-white">
+        <section className="py-20 md:py-32 section-premium-light section-premium-light--soft">
           <div className="container mx-auto px-6">
             <div className="max-w-7xl mx-auto">
               <div className="grid lg:grid-cols-5 gap-16">
@@ -350,6 +377,10 @@ export default function ContactPage() {
                               )}
                             </Button>
                           </div>
+
+                          {submitError && (
+                            <p className="text-sm text-destructive">{submitError}</p>
+                          )}
 
                           {/* Privacy Notice */}
                           <p className="text-xs font-inter text-charcoal-500 leading-relaxed">

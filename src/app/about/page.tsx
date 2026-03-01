@@ -13,10 +13,10 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-ivory-50">
+    <div className="premium-site-shell premium-site-shell--deep">
       <EnhancedNavigation items={primaryNavItems} />
 
-      <main id="main-content" className="flex-grow">
+      <main id="main-content" className="premium-page-main">
         {/* Hero Section */}
         <LegalHero
           title="Trusted Investment Expertise for Modern Business Challenges"
@@ -26,7 +26,7 @@ export default function AboutPage() {
         />
 
         {/* Elegant Intro Section */}
-        <section className="py-20 md:py-32 relative overflow-hidden">
+        <section className="py-20 md:py-32 relative overflow-hidden section-premium-light">
           {/* Subtle Background Texture */}
           <div className="absolute inset-0 opacity-[0.02] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMSI+PHBhdGggZD0iTTM2IDE0YzIuMjEgMCA0IDEuNzkgNCA0cy0xLjc5IDQtNCA0LTQtMS43OS00LTQgMS43OS00IDQtNG0wIDI4YzIuMjEgMCA0IDEuNzkgNCA0cy0xLjc5IDQtNCA0LTQtMS43OS00LTQgMS43OS00IDQtNHpNMCAzNmMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHptMjggMGMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')]" />
 
@@ -45,7 +45,7 @@ export default function AboutPage() {
               </ScrollReveal>
 
               <ScrollReveal direction="scale" delay={0.2}>
-                <div className="bg-white/80 backdrop-blur-sm p-10 md:p-16 rounded-lg shadow-xl border border-ivory-300">
+                <div className="premium-glass-panel p-10 md:p-16">
                   <p className="font-inter text-xl text-charcoal-700 leading-relaxed mb-8 text-center">
                     GNG Global Investment Group is an investment firm founded in Perth, Australia. We have numerous strategic investments in a wide range of sectors and asset classes, including healthcare, media, financial services, and advisory services.
                   </p>
@@ -59,7 +59,7 @@ export default function AboutPage() {
         </section>
 
         {/* The GNG Value Exchange - Sophisticated Alternating Layout */}
-        <section className="py-20 md:py-32 bg-white relative">
+        <section className="py-20 md:py-32 section-premium-neutral section-premium-divider relative">
           <div className="container mx-auto px-6">
             <div className="max-w-7xl mx-auto">
               {/* Section Header */}
@@ -157,7 +157,7 @@ export default function AboutPage() {
         </section>
 
         {/* Why Clients Choose Us - Enhanced */}
-        <section className="py-20 md:py-32 bg-gradient-to-br from-navy-900 via-navy-800 to-charcoal-900 text-white relative overflow-hidden">
+        <section className="py-20 md:py-32 section-premium-dark text-white relative overflow-hidden">
           {/* Elegant Background Pattern */}
           <div className="absolute inset-0 opacity-[0.03]">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGQ9Ik0gMTAwIDAgTCAwIDAgMCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')]" />
@@ -237,7 +237,7 @@ export default function AboutPage() {
         </section>
 
         {/* Land Acknowledgement - Refined */}
-        <section className="py-16 bg-charcoal-900 text-ivory-100 border-t border-charcoal-800">
+        <section className="py-16 section-premium-dark text-ivory-100 border-t border-charcoal-800/40">
           <div className="container mx-auto px-6">
             <ScrollReveal direction="scale">
               <div className="max-w-4xl mx-auto text-center">

@@ -85,10 +85,10 @@ const sectors = [
 
 export default function PortfolioPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-ivory-50">
+    <div className="premium-site-shell">
       <EnhancedNavigation items={primaryNavItems} />
 
-      <main id="main-content" className="flex-grow">
+      <main id="main-content" className="premium-page-main">
         {/* Hero Section */}
         <LegalHero
           title="Strategic Investments Across Multiple Sectors"
@@ -98,7 +98,7 @@ export default function PortfolioPage() {
         />
 
         {/* Introduction Section */}
-        <section className="py-20 md:py-28 bg-white relative overflow-hidden">
+        <section className="py-20 md:py-28 section-premium-light relative overflow-hidden">
           <div className="absolute inset-0 opacity-[0.02] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMSI+PHBhdGggZD0iTTM2IDE0YzIuMjEgMCA0IDEuNzkgNCA0cy0xLjc5IDQtNCA0LTQtMS43OS00LTQgMS43OS00IDQtNG0wIDI4YzIuMjEgMCA0IDEuNzkgNCA0cy0xLjc5IDQtNCA0LTQtMS43OS00LTQgMS43OS00IDQtNHpNMCAzNmMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHptMjggMGMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')]" />
 
           <div className="container mx-auto px-6 relative">
@@ -119,7 +119,7 @@ export default function PortfolioPage() {
         </section>
 
         {/* Portfolio Companies - Sophisticated Cards */}
-        <section className="py-20 md:py-32 bg-ivory-50">
+        <section className="py-20 md:py-32 section-premium-neutral section-premium-neutral--crisp section-premium-divider">
           <div className="container mx-auto px-6">
             <div className="max-w-7xl mx-auto">
               <ScrollReveal direction="up">
@@ -223,7 +223,7 @@ export default function PortfolioPage() {
         </section>
 
         {/* Sectors Overview */}
-        <section className="py-20 md:py-28 bg-white">
+        <section className="py-20 md:py-28 section-premium-light">
           <div className="container mx-auto px-6">
             <div className="max-w-6xl mx-auto">
               <ScrollReveal direction="up">
@@ -261,7 +261,7 @@ export default function PortfolioPage() {
         </section>
 
         {/* Call to Action */}
-        <section className="py-20 md:py-28 bg-gradient-to-br from-navy-900 via-navy-800 to-charcoal-900 text-white">
+        <section className="py-20 md:py-28 section-premium-dark section-premium-dark--tempered text-white">
           <div className="container mx-auto px-6">
             <ScrollReveal direction="scale">
               <div className="max-w-4xl mx-auto text-center">
