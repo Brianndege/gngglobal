@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PostStatus {
+  draft
+  published
+}
+
+enum SubscriberStatus {
+  active
+  unsubscribed
+}
+
+enum ContactStatus {
+  new
+  responded
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String   @default("Admin")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Post {
+  id                String     @id @default(cuid())
+  title             String
+  subheading        String?
+  slug              String     @unique
+  category          String     @default("General")
+  featuredImageUrl  String?
+  featuredImageAlt  String?
+  content           String
+  metaTitle         String?
+  metaDescription   String?
+  socialFacebook    Boolean    @default(false)
+  socialInstagram   Boolean    @default(false)
+  socialLinkedin    Boolean    @default(false)
+  socialTwitter     Boolean    @default(false)
+  status            PostStatus @default(draft)
+  publishDate       DateTime?
+  publishedAt       DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+}
+
+model NewsletterSubscriber {
+  id           String           @id @default(cuid())
+  email        String           @unique
+  source       String           @default("news-page")
+  consent      Boolean          @default(false)
+  status       SubscriberStatus @default(active)
+  subscribedAt DateTime         @default(now())
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model ContactMessage {
+  id            String        @id @default(cuid())
+  name          String
+  email         String
+  phone         String        @default("")
+  company       String        @default("")
+  message       String
+  status        ContactStatus @default(new)
+  responseNotes String        @default("")
+  respondedAt   DateTime?
+  source        String        @default("contact-page")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([email])
+  @@index([status])
+}

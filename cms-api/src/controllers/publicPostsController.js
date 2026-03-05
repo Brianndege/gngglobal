@@ -1,4 +1,5 @@
-import { Post } from "../models/Post.js";
+import { prisma } from "../config/prisma.js";
+import { serializePost } from "../utils/serializers.js";
 
 export async function getPublishedPosts(req, res, next) {
   try {
@@ -6,25 +7,31 @@ export async function getPublishedPosts(req, res, next) {
     const limit = Math.min(Math.max(Number(req.query.limit) || 6, 1), 50);
     const category = req.query.category && req.query.category !== "All" ? req.query.category : null;
 
-    const filter = { status: "published" };
-    if (category) {
-      filter.category = category;
-    }
+    const where = {
+      status: "published",
+      ...(category ? { category } : {}),
+    };
 
     const [posts, total] = await Promise.all([
-      Post.find(filter)
-        .sort({ publishedAt: -1, createdAt: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .lean(),
-      Post.countDocuments(filter),
+      prisma.post.findMany({
+        where,
+        orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.post.count({ where }),
     ]);
 
-    const categories = await Post.distinct("category", { status: "published" });
+    const categories = await prisma.post.findMany({
+      where: { status: "published" },
+      distinct: ["category"],
+      select: { category: true },
+      orderBy: { category: "asc" },
+    });
 
     return res.json({
-      posts,
-      categories: categories.filter(Boolean),
+      posts: posts.map(serializePost),
+      categories: categories.map((entry) => entry.category).filter(Boolean),
       pagination: {
         page,
         limit,
@@ -42,13 +49,15 @@ export async function getPublishedPostBySlug(req, res, next) {
   try {
     const { slug } = req.params;
 
-    const post = await Post.findOne({ slug, status: "published" }).lean();
+    const post = await prisma.post.findFirst({
+      where: { slug, status: "published" },
+    });
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    return res.json({ post });
+    return res.json({ post: serializePost(post) });
   } catch (error) {
     return next(error);
   }

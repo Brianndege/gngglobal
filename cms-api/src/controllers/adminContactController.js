@@ -1,5 +1,6 @@
 import sanitizeHtml from "sanitize-html";
-import { ContactMessage } from "../models/ContactMessage.js";
+import { prisma } from "../config/prisma.js";
+import { serializeContactMessage } from "../utils/serializers.js";
 import { sendContactNotificationTest } from "../utils/contactNotifier.js";
 
 function sanitizePlainText(value) {
@@ -15,22 +16,20 @@ export async function getAdminContactMessages(req, res, next) {
     const limit = Math.min(Math.max(Number(req.query.limit) || 25, 1), 200);
     const status = req.query.status && req.query.status !== "all" ? String(req.query.status) : null;
 
-    const filter = {};
-    if (status) {
-      filter.status = status;
-    }
+    const where = status ? { status } : {};
 
     const [messages, total] = await Promise.all([
-      ContactMessage.find(filter)
-        .sort({ createdAt: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .lean(),
-      ContactMessage.countDocuments(filter),
+      prisma.contactMessage.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.contactMessage.count({ where }),
     ]);
 
     return res.json({
-      messages,
+      messages: messages.map(serializeContactMessage),
       pagination: {
         page,
         limit,
@@ -46,7 +45,9 @@ export async function getAdminContactMessages(req, res, next) {
 
 export async function updateAdminContactMessage(req, res, next) {
   try {
-    const message = await ContactMessage.findById(req.params.id);
+    const message = await prisma.contactMessage.findUnique({
+      where: { id: req.params.id },
+    });
 
     if (!message) {
       return res.status(404).json({ message: "Contact message not found" });
@@ -59,13 +60,16 @@ export async function updateAdminContactMessage(req, res, next) {
 
     const responseNotes = sanitizePlainText(req.body.responseNotes || "");
 
-    message.status = requestedStatus;
-    message.responseNotes = responseNotes;
-    message.respondedAt = requestedStatus === "responded" ? new Date() : null;
+    const updated = await prisma.contactMessage.update({
+      where: { id: req.params.id },
+      data: {
+        status: requestedStatus,
+        responseNotes,
+        respondedAt: requestedStatus === "responded" ? new Date() : null,
+      },
+    });
 
-    await message.save();
-
-    return res.json({ message });
+    return res.json({ message: serializeContactMessage(updated) });
   } catch (error) {
     return next(error);
   }

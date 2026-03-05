@@ -1,5 +1,6 @@
 import sanitizeHtml from "sanitize-html";
-import { ContactMessage } from "../models/ContactMessage.js";
+import { prisma } from "../config/prisma.js";
+import { serializeContactMessage } from "../utils/serializers.js";
 import { notifyNewContactMessage } from "../utils/contactNotifier.js";
 
 function isValidEmail(email) {
@@ -39,17 +40,19 @@ export async function createContactMessage(req, res, next) {
       return res.status(400).json({ message: "Message must be at least 20 characters" });
     }
 
-    const createdMessage = await ContactMessage.create({
-      name: safeName,
-      email: safeEmail,
-      phone: safePhone,
-      company: safeCompany,
-      message: safeMessage,
-      source: "contact-page",
-      status: "new",
+    const createdMessage = await prisma.contactMessage.create({
+      data: {
+        name: safeName,
+        email: safeEmail,
+        phone: safePhone,
+        company: safeCompany,
+        message: safeMessage,
+        source: "contact-page",
+        status: "new",
+      },
     });
 
-    await notifyNewContactMessage(createdMessage);
+    await notifyNewContactMessage(serializeContactMessage(createdMessage));
 
     return res.status(201).json({ message: "Message sent successfully" });
   } catch (error) {

@@ -61,7 +61,7 @@ app.use("/api", adminContactRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-connectDb(process.env.MONGODB_URI)
+connectDb()
   .then(() => {
     app.listen(port, () => {
       console.log(`CMS API running on port ${port}`);

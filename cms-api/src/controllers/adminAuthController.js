@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { AdminUser } from "../models/AdminUser.js";
+import { prisma } from "../config/prisma.js";
+import { serializeAdminUser } from "../utils/serializers.js";
 
 export async function adminLogin(req, res, next) {
   try {
@@ -10,7 +11,9 @@ export async function adminLogin(req, res, next) {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
-    const admin = await AdminUser.findOne({ email: String(email).toLowerCase().trim() });
+    const admin = await prisma.adminUser.findUnique({
+      where: { email: String(email).toLowerCase().trim() },
+    });
 
     if (!admin) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -23,7 +26,7 @@ export async function adminLogin(req, res, next) {
 
     const token = jwt.sign(
       {
-        sub: admin._id.toString(),
+        sub: admin.id,
         email: admin.email,
         role: "admin",
       },
@@ -33,11 +36,7 @@ export async function adminLogin(req, res, next) {
 
     return res.json({
       token,
-      admin: {
-        id: admin._id,
-        email: admin.email,
-        name: admin.name,
-      },
+      admin: serializeAdminUser(admin),
     });
   } catch (error) {
     return next(error);

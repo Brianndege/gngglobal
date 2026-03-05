@@ -1,4 +1,4 @@
-import { NewsletterSubscriber } from "../models/NewsletterSubscriber.js";
+import { prisma } from "../config/prisma.js";
 
 function isValidEmail(email) {
   return /^\S+@\S+\.\S+$/.test(email);
@@ -39,15 +39,21 @@ export async function subscribeNewsletter(req, res, next) {
       return res.status(400).json({ message: "Consent is required to subscribe" });
     }
 
-    const existing = await NewsletterSubscriber.findOne({ email: normalizedEmail });
+    const existing = await prisma.newsletterSubscriber.findUnique({
+      where: { email: normalizedEmail },
+    });
 
     if (existing) {
       if (existing.status !== "active") {
-        existing.status = "active";
-        existing.consent = true;
-        existing.source = source || existing.source;
-        existing.subscribedAt = new Date();
-        await existing.save();
+        await prisma.newsletterSubscriber.update({
+          where: { id: existing.id },
+          data: {
+            status: "active",
+            consent: true,
+            source: source || existing.source,
+            subscribedAt: new Date(),
+          },
+        });
       }
 
       await notifyWebhook({
@@ -60,12 +66,14 @@ export async function subscribeNewsletter(req, res, next) {
       return res.status(200).json({ message: "Subscribed successfully" });
     }
 
-    const subscriber = await NewsletterSubscriber.create({
-      email: normalizedEmail,
-      consent: true,
-      source: source || "news-page",
-      status: "active",
-      subscribedAt: new Date(),
+    const subscriber = await prisma.newsletterSubscriber.create({
+      data: {
+        email: normalizedEmail,
+        consent: true,
+        source: source || "news-page",
+        status: "active",
+        subscribedAt: new Date(),
+      },
     });
 
     await notifyWebhook({

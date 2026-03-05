@@ -32,6 +32,7 @@ The visual design and layout are inspired by modern professional service firm we
 - **Styling:** Tailwind CSS
 - **Components:** shadcn/ui
 - **Package Manager:** Bun
+- **CMS API Database:** PostgreSQL via Prisma
 - **Deployment:** Netlify-ready
 
 ## Getting Started
@@ -66,11 +67,13 @@ By default this uses `CMS_API_SERVER_URL=http://localhost:8081` and proxies fron
 ```bash
 npm install
 cp .env.example .env
+npm run prisma:generate
+npm run prisma:push
 npm run seed:admin
 npm run dev
 ```
 
-Ensure MongoDB is running locally (or set `MONGODB_URI` to your MongoDB Atlas connection string).
+Set `DATABASE_URL` in `cms-api/.env` to your Postgres connection string (for Netlify DB, use `NETLIFY_DATABASE_URL`).
 
 3. Open admin panel routes:
 

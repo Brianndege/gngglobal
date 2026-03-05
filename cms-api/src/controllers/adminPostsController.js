@@ -1,5 +1,6 @@
 import sanitizeHtml from "sanitize-html";
-import { Post } from "../models/Post.js";
+import { prisma } from "../config/prisma.js";
+import { serializePost } from "../utils/serializers.js";
 import { slugify } from "../utils/slugify.js";
 
 function sanitizeContent(content) {
@@ -50,12 +51,14 @@ function parseSocialChannels(payload, fallback) {
 }
 
 async function ensureUniqueSlug(slug, ignoreId) {
-  const query = { slug };
-  if (ignoreId) {
-    query._id = { $ne: ignoreId };
-  }
+  const existing = await prisma.post.findFirst({
+    where: {
+      slug,
+      ...(ignoreId ? { id: { not: ignoreId } } : {}),
+    },
+    select: { id: true },
+  });
 
-  const existing = await Post.findOne(query).select("_id").lean();
   if (!existing) {
     return slug;
   }
@@ -83,8 +86,8 @@ function validatePayload(payload, hasIncomingImage, hasExistingImage) {
 
 export async function getAdminPosts(req, res, next) {
   try {
-    const posts = await Post.find({}).sort({ updatedAt: -1 }).lean();
-    return res.json({ posts });
+    const posts = await prisma.post.findMany({ orderBy: { updatedAt: "desc" } });
+    return res.json({ posts: posts.map(serializePost) });
   } catch (error) {
     return next(error);
   }
@@ -92,13 +95,13 @@ export async function getAdminPosts(req, res, next) {
 
 export async function getAdminPostById(req, res, next) {
   try {
-    const post = await Post.findById(req.params.id).lean();
+    const post = await prisma.post.findUnique({ where: { id: req.params.id } });
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    return res.json({ post });
+    return res.json({ post: serializePost(post) });
   } catch (error) {
     return next(error);
   }
@@ -123,24 +126,30 @@ export async function createAdminPost(req, res, next) {
 
     const slug = await ensureUniqueSlug(rawSlug);
 
-    const post = await Post.create({
-      title: String(payload.title).trim(),
-      subheading: payload.subheading?.trim() || "",
-      slug,
-      category: payload.category?.trim() || "General",
-      featuredImage: imageUrl
-        ? { url: imageUrl, alt: String(payload.featuredImageAlt).trim() }
-        : undefined,
-      content: sanitizeContent(payload.content),
-      metaTitle: payload.metaTitle?.trim() || "",
-      metaDescription: payload.metaDescription?.trim() || "",
-      socialChannels: parseSocialChannels(payload),
-      status,
-      publishDate: parseDate(payload.publishDate),
-      publishedAt: status === "published" ? parseDate(payload.publishDate) || new Date() : undefined,
+    const socialChannels = parseSocialChannels(payload);
+
+    const post = await prisma.post.create({
+      data: {
+        title: String(payload.title).trim(),
+        subheading: payload.subheading?.trim() || "",
+        slug,
+        category: payload.category?.trim() || "General",
+        featuredImageUrl: imageUrl || null,
+        featuredImageAlt: imageUrl ? String(payload.featuredImageAlt).trim() : null,
+        content: sanitizeContent(payload.content),
+        metaTitle: payload.metaTitle?.trim() || "",
+        metaDescription: payload.metaDescription?.trim() || "",
+        socialFacebook: socialChannels.facebook,
+        socialInstagram: socialChannels.instagram,
+        socialLinkedin: socialChannels.linkedin,
+        socialTwitter: socialChannels.twitter,
+        status,
+        publishDate: parseDate(payload.publishDate) || null,
+        publishedAt: status === "published" ? parseDate(payload.publishDate) || new Date() : null,
+      },
     });
 
-    return res.status(201).json({ post });
+    return res.status(201).json({ post: serializePost(post) });
   } catch (error) {
     return next(error);
   }
@@ -148,7 +157,7 @@ export async function createAdminPost(req, res, next) {
 
 export async function updateAdminPost(req, res, next) {
   try {
-    const existing = await Post.findById(req.params.id);
+    const existing = await prisma.post.findUnique({ where: { id: req.params.id } });
 
     if (!existing) {
       return res.status(404).json({ message: "Post not found" });
@@ -161,9 +170,9 @@ export async function updateAdminPost(req, res, next) {
 
     const rawSlug = payload.slug ? slugify(payload.slug) : slugify(payload.title || existing.title);
     const errors = validatePayload(
-      { ...existing.toObject(), ...payload },
+      { ...existing, ...payload },
       Boolean(imageUrl),
-      !shouldDeleteImage && Boolean(existing.featuredImage?.url)
+      !shouldDeleteImage && Boolean(existing.featuredImageUrl)
     );
 
     if (!rawSlug) {
@@ -174,43 +183,58 @@ export async function updateAdminPost(req, res, next) {
       return res.status(400).json({ message: "Validation failed", errors });
     }
 
-    const slug = await ensureUniqueSlug(rawSlug, existing._id);
+    const slug = await ensureUniqueSlug(rawSlug, existing.id);
+    const socialChannels = parseSocialChannels(payload, {
+      facebook: existing.socialFacebook,
+      instagram: existing.socialInstagram,
+      linkedin: existing.socialLinkedin,
+      twitter: existing.socialTwitter,
+    });
 
-    existing.title = String(payload.title || existing.title).trim();
-    existing.subheading = payload.subheading?.trim() ?? existing.subheading;
-    existing.slug = slug;
-    existing.category = payload.category?.trim() || existing.category;
-    existing.content = sanitizeContent(payload.content || existing.content);
-    existing.metaTitle = payload.metaTitle?.trim() ?? existing.metaTitle;
-    existing.metaDescription = payload.metaDescription?.trim() ?? existing.metaDescription;
-    existing.socialChannels = parseSocialChannels(payload, existing.socialChannels);
-    existing.status = status;
-    existing.publishDate = parseDate(payload.publishDate) ?? existing.publishDate;
+    const nextPublishDate = parseDate(payload.publishDate) ?? existing.publishDate;
+    const shouldSetPublishedAt = status === "published";
+    const publishedAt = shouldSetPublishedAt
+      ? existing.publishedAt || nextPublishDate || new Date()
+      : null;
+
+    let featuredImageUrl = existing.featuredImageUrl;
+    let featuredImageAlt = existing.featuredImageAlt;
 
     if (shouldDeleteImage) {
-      existing.featuredImage = { url: "", alt: "" };
+      featuredImageUrl = null;
+      featuredImageAlt = null;
     }
 
     if (imageUrl) {
-      existing.featuredImage = {
-        url: imageUrl,
-        alt: String(payload.featuredImageAlt || "").trim(),
-      };
-    } else if (existing.featuredImage?.url) {
-      existing.featuredImage.alt = String(payload.featuredImageAlt || existing.featuredImage.alt || "").trim();
+      featuredImageUrl = imageUrl;
+      featuredImageAlt = String(payload.featuredImageAlt || "").trim();
+    } else if (featuredImageUrl) {
+      featuredImageAlt = String(payload.featuredImageAlt || featuredImageAlt || "").trim();
     }
 
-    if (status === "published" && !existing.publishedAt) {
-      existing.publishedAt = existing.publishDate || new Date();
-    }
+    const updated = await prisma.post.update({
+      where: { id: req.params.id },
+      data: {
+        title: String(payload.title || existing.title).trim(),
+        subheading: payload.subheading?.trim() ?? existing.subheading,
+        slug,
+        category: payload.category?.trim() || existing.category,
+        content: sanitizeContent(payload.content || existing.content),
+        metaTitle: payload.metaTitle?.trim() ?? existing.metaTitle,
+        metaDescription: payload.metaDescription?.trim() ?? existing.metaDescription,
+        socialFacebook: socialChannels.facebook,
+        socialInstagram: socialChannels.instagram,
+        socialLinkedin: socialChannels.linkedin,
+        socialTwitter: socialChannels.twitter,
+        status,
+        publishDate: nextPublishDate || null,
+        publishedAt,
+        featuredImageUrl,
+        featuredImageAlt,
+      },
+    });
 
-    if (status === "draft") {
-      existing.publishedAt = undefined;
-    }
-
-    await existing.save();
-
-    return res.json({ post: existing });
+    return res.json({ post: serializePost(updated) });
   } catch (error) {
     return next(error);
   }
@@ -218,14 +242,14 @@ export async function updateAdminPost(req, res, next) {
 
 export async function deleteAdminPost(req, res, next) {
   try {
-    const deleted = await Post.findByIdAndDelete(req.params.id);
-
-    if (!deleted) {
-      return res.status(404).json({ message: "Post not found" });
-    }
+    await prisma.post.delete({ where: { id: req.params.id } });
 
     return res.status(204).send();
   } catch (error) {
+    if (error?.code === "P2025") {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
     return next(error);
   }
 }
