@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import { getCmsApiBaseUrl } from "@/lib/cms";
 
 type DbState = "connected" | "connecting" | "disconnecting" | "disconnected" | "unknown";
@@ -30,6 +31,7 @@ function statusTone(dbState: DbState, reachable: boolean) {
 }
 
 export default function AdminApiStatusBanner() {
+  const pathname = usePathname();
   const [dbState, setDbState] = useState<DbState>("unknown");
   const [reachable, setReachable] = useState(true);
   const [lastChecked, setLastChecked] = useState<string | null>(null);
@@ -86,6 +88,10 @@ export default function AdminApiStatusBanner() {
     : dbState === "connected"
       ? "CMS API connected"
       : `CMS API ${dbState}`;
+
+  if (pathname === "/admin/login") {
+    return null;
+  }
 
   return (
     <div className="sticky top-0 z-50 px-4 md:px-6 pt-4">
