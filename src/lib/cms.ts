@@ -66,7 +66,20 @@ export function getCmsApiBaseUrl() {
   const configuredBaseUrl = process.env.NEXT_PUBLIC_CMS_API_URL?.trim();
 
   if (configuredBaseUrl) {
-    return configuredBaseUrl.replace(/\/$/, "");
+    const normalized = configuredBaseUrl.replace(/\/$/, "");
+
+    // Safety guard: if a localhost URL was baked into a production build,
+    // fall back to same-origin APIs instead of making unreachable requests.
+    if (typeof window !== "undefined") {
+      const isConfiguredLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(normalized);
+      const isCurrentOriginLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname);
+
+      if (isConfiguredLocalhost && !isCurrentOriginLocalhost) {
+        return "";
+      }
+    }
+
+    return normalized;
   }
 
   // Default to same-origin and rely on Next rewrites for /api and /uploads.
