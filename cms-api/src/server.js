@@ -3,7 +3,7 @@ import path from "node:path";
 import express from "express";
 import cors from "cors";
 import { fileURLToPath } from "node:url";
-import { connectDb } from "./config/db.js";
+import { connectDb, getDbStatus } from "./config/db.js";
 import publicPostsRoutes from "./routes/publicPostsRoutes.js";
 import adminAuthRoutes from "./routes/adminAuthRoutes.js";
 import adminPostsRoutes from "./routes/adminPostsRoutes.js";
@@ -43,7 +43,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(uploadsPath));
 
 app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
+  res.json({ status: "ok", db: getDbStatus() });
+});
+
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "ok", db: getDbStatus() });
 });
 
 app.use("/api", publicPostsRoutes);

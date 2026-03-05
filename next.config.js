@@ -1,6 +1,20 @@
 /** @type {import('next').NextConfig} */
+const cmsProxyTarget = (process.env.CMS_API_SERVER_URL || "http://localhost:8081").replace(/\/$/, "");
+
 const nextConfig = {
   allowedDevOrigins: ["*.preview.same-app.com"],
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${cmsProxyTarget}/api/:path*`,
+      },
+      {
+        source: "/uploads/:path*",
+        destination: `${cmsProxyTarget}/uploads/:path*`,
+      },
+    ];
+  },
   async redirects() {
     return [
       {

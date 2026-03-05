@@ -63,7 +63,14 @@ export interface ContactMessage {
 }
 
 export function getCmsApiBaseUrl() {
-  return process.env.NEXT_PUBLIC_CMS_API_URL || "http://localhost:8081";
+  const configuredBaseUrl = process.env.NEXT_PUBLIC_CMS_API_URL?.trim();
+
+  if (configuredBaseUrl) {
+    return configuredBaseUrl.replace(/\/$/, "");
+  }
+
+  // Default to same-origin and rely on Next rewrites for /api and /uploads.
+  return "";
 }
 
 export async function fetchPublishedPosts(params: { page?: number; limit?: number; category?: string }) {

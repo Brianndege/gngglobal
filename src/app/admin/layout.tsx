@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AdminApiStatusBanner from "@/components/admin/AdminApiStatusBanner";
 
 export const metadata: Metadata = {
   title: "Admin | GNG Global",
@@ -6,5 +7,10 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <div className="min-h-screen bg-ivory-50">{children}</div>;
+  return (
+    <div className="min-h-screen bg-ivory-50">
+      <AdminApiStatusBanner />
+      {children}
+    </div>
+  );
 }

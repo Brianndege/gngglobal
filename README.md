@@ -56,8 +56,10 @@ The `news` page now supports dynamic posts from a standalone CMS API.
 1. Set frontend environment variable:
 
 ```bash
-NEXT_PUBLIC_CMS_API_URL=http://localhost:8080
+cp .env.example .env.local
 ```
+
+By default this uses `CMS_API_SERVER_URL=http://localhost:8081` and proxies frontend requests through Next.js rewrites (`/api/*` and `/uploads/*`).
 
 2. Run CMS backend from `cms-api/`:
 
@@ -67,6 +69,8 @@ cp .env.example .env
 npm run seed:admin
 npm run dev
 ```
+
+Ensure MongoDB is running locally (or set `MONGODB_URI` to your MongoDB Atlas connection string).
 
 3. Open admin panel routes:
 
