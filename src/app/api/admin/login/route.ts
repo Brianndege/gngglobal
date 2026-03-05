@@ -1,5 +1,5 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { compare } from "bcryptjs";
+import { sign, type SignOptions } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { prisma } from "@/server/prisma";
 
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
     }
 
-    const isMatch = await bcrypt.compare(password, admin.passwordHash);
+    const isMatch = await compare(password, admin.passwordHash);
     if (!isMatch) {
       return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
     }
@@ -30,10 +30,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "JWT_SECRET is required" }, { status: 500 });
     }
 
-    const token = jwt.sign(
+    const token = sign(
       { sub: admin.id, email: admin.email, role: "admin" },
       secret,
-      { expiresIn: (process.env.JWT_EXPIRES_IN || "1d") as jwt.SignOptions["expiresIn"] }
+      { expiresIn: (process.env.JWT_EXPIRES_IN || "1d") as SignOptions["expiresIn"] }
     );
 
     return NextResponse.json({
