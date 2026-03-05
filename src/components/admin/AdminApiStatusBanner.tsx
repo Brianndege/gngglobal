@@ -89,7 +89,7 @@ export default function AdminApiStatusBanner() {
       ? "CMS API connected"
       : `CMS API ${dbState}`;
 
-  if (pathname === "/admin/login") {
+  if (pathname === "/admin/login" || pathname === "/admin/dashboard") {
     return null;
   }
 
