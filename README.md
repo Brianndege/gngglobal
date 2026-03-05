@@ -79,8 +79,17 @@ Set `DATABASE_URL` in `cms-api/.env` to your Postgres connection string (for Net
 
 - `/admin/login`
 - `/admin/dashboard`
+- `/admin/posts`
 - `/admin/posts/new`
 - `/admin/posts/edit/:id`
+- `/admin/messages`
+- `/admin/subscribers`
+
+## Admin Documentation
+
+- Full guide for IT handover: [docs/ADMIN_USER_GUIDE.md](./docs/ADMIN_USER_GUIDE.md)
+- One-page SOP for operations: [docs/ADMIN_SOP_ONE_PAGE.md](./docs/ADMIN_SOP_ONE_PAGE.md)
+
 ## Project Structure
 
 ```
