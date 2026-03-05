@@ -89,6 +89,7 @@ Set `DATABASE_URL` in `cms-api/.env` to your Postgres connection string (for Net
 
 - Full guide for IT handover: [docs/ADMIN_USER_GUIDE.md](./docs/ADMIN_USER_GUIDE.md)
 - One-page SOP for operations: [docs/ADMIN_SOP_ONE_PAGE.md](./docs/ADMIN_SOP_ONE_PAGE.md)
+- Print/PDF handout edition: [docs/ADMIN_USER_GUIDE_PRINT.md](./docs/ADMIN_USER_GUIDE_PRINT.md)
 
 ## Project Structure
 
