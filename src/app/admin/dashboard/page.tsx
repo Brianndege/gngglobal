@@ -410,6 +410,7 @@ export default function AdminDashboardPage() {
             <p className="text-sm text-charcoal-600 mt-1">Revenue, vendor performance, order health, and operations automation in one place.</p>
           </div>
           <div className="flex items-center gap-3">
+            <Link href="/admin/guide" className="rounded-md border border-charcoal-300 px-4 py-2 text-charcoal-700">Guide</Link>
             <Link href="/admin/messages" className="rounded-md border border-charcoal-300 px-4 py-2 text-charcoal-700">Messages</Link>
             <Link href="/admin/subscribers" className="rounded-md border border-charcoal-300 px-4 py-2 text-charcoal-700">Subscribers</Link>
             <Link href="/admin/posts/new" className="rounded-md bg-navy-700 hover:bg-navy-800 text-white px-4 py-2 font-semibold">Add New Post</Link>
@@ -440,6 +441,15 @@ export default function AdminDashboardPage() {
               className="rounded-md border border-charcoal-300 px-3 py-2 text-sm"
             >
               Keyboard Shortcuts (?)
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                router.push("/admin/guide");
+              }}
+              className="rounded-md border border-charcoal-300 px-3 py-2 text-sm"
+            >
+              Open Guide
             </button>
             <button
               type="button"

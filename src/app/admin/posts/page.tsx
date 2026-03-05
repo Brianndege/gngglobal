@@ -144,6 +144,7 @@ export default function AdminPostsPage() {
           </div>
           <div className="flex items-center gap-2">
             <Link href="/admin/dashboard" className="rounded border border-charcoal-300 px-3 py-2 text-sm">Dashboard</Link>
+            <Link href="/admin/guide" className="rounded border border-charcoal-300 px-3 py-2 text-sm">Guide</Link>
             <Link href="/admin/posts/new" className="rounded bg-navy-700 px-4 py-2 text-white text-sm font-semibold">New Post</Link>
           </div>
         </div>

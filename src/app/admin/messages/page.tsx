@@ -180,6 +180,7 @@ export default function AdminMessagesPage() {
             >
               {isSendingTest ? "Sending test..." : "Send SMTP Test"}
             </button>
+            <Link href="/admin/guide" className="rounded-md border border-charcoal-300 px-4 py-2 text-charcoal-700">Guide</Link>
             <Link href="/admin/dashboard" className="rounded-md border border-charcoal-300 px-4 py-2 text-charcoal-700">Back to Dashboard</Link>
           </div>
         </div>

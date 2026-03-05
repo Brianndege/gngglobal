@@ -325,6 +325,7 @@ export default function AdminSubscribersPage() {
             <p className="text-sm text-charcoal-600 mt-1">Manage and export newsletter signups.</p>
           </div>
           <div className="flex w-full sm:w-auto flex-wrap items-center justify-start gap-2 sm:gap-3">
+            <Link href="/admin/guide" className="w-full sm:w-auto text-center rounded-md border border-charcoal-300 px-4 py-2 text-charcoal-700">Guide</Link>
             <Link href="/admin/dashboard" className="w-full sm:w-auto text-center rounded-md border border-charcoal-300 px-4 py-2 text-charcoal-700">Back to Dashboard</Link>
             <button
               type="button"
