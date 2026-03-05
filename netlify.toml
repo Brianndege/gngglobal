@@ -1,5 +1,5 @@
 [build]
-  command = "bun run prisma:push && bun run build"
+  command = "DATABASE_URL=\"$NETLIFY_DATABASE_URL\" bun run prisma:push && bun run build"
   publish = ".next"
 
 [[plugins]]
