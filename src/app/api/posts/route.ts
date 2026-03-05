@@ -13,6 +13,11 @@ export async function GET(request: NextRequest) {
 
     const where = {
       status: "published" as const,
+      archivedAt: null,
+      OR: [
+        { scheduledFor: null },
+        { scheduledFor: { lte: new Date() } },
+      ],
       ...(category ? { category } : {}),
     };
 
@@ -25,24 +30,35 @@ export async function GET(request: NextRequest) {
       }),
       prisma.post.count({ where }),
       prisma.post.findMany({
-        where: { status: "published" },
+        where: {
+          status: "published",
+          archivedAt: null,
+          OR: [{ scheduledFor: null }, { scheduledFor: { lte: new Date() } }],
+        },
         distinct: ["category"],
         select: { category: true },
         orderBy: { category: "asc" },
       }),
     ]);
 
-    return NextResponse.json({
-      posts: posts.map(serializePost),
-      categories: categories.map((item: { category: string }) => item.category).filter(Boolean),
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-        hasMore: page * limit < total,
+    return NextResponse.json(
+      {
+        posts: posts.map(serializePost),
+        categories: categories.map((item: { category: string }) => item.category).filter(Boolean),
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+          hasMore: page * limit < total,
+        },
       },
-    });
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=86400",
+        },
+      }
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to fetch posts";
     return NextResponse.json({ message }, { status: 500 });

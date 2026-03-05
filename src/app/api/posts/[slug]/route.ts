@@ -9,14 +9,26 @@ export async function GET(_request: Request, context: { params: Promise<{ slug: 
     const { slug } = await context.params;
 
     const post = await prisma.post.findFirst({
-      where: { slug, status: "published" },
+      where: {
+        slug,
+        status: "published",
+        archivedAt: null,
+        OR: [{ scheduledFor: null }, { scheduledFor: { lte: new Date() } }],
+      },
     });
 
     if (!post) {
       return NextResponse.json({ message: "Post not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ post: serializePost(post) });
+    return NextResponse.json(
+      { post: serializePost(post) },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=86400",
+        },
+      }
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to fetch post";
     return NextResponse.json({ message }, { status: 500 });

@@ -13,6 +13,25 @@ enum PostStatus {
   published
 }
 
+enum AdminRole {
+  admin
+  editor
+}
+
+enum ContentFormat {
+  html
+  markdown
+}
+
+enum WorkflowStatus {
+  draft
+  review
+  approved
+  rejected
+  published
+  archived
+}
+
 enum SubscriberStatus {
   active
   unsubscribed
@@ -28,30 +47,109 @@ model AdminUser {
   email        String   @unique
   passwordHash String
   name         String   @default("Admin")
+  role         AdminRole @default(admin)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  posts        Post[]
+  assignedPosts Post[]  @relation("AssignedAuthor")
 }
 
 model Post {
   id               String     @id @default(cuid())
   title            String
+  excerpt          String?
   subheading       String?
   slug             String     @unique
   category         String     @default("General")
+  tags             String[]   @default([])
   featuredImageUrl String?
   featuredImageAlt String?
+  mediaLibrary     Json?
   content          String
+  contentFormat    ContentFormat @default(html)
+  markdownContent  String?
   metaTitle        String?
   metaDescription  String?
+  canonicalUrl     String?
+  ogTitle          String?
+  ogDescription    String?
+  ogImage          String?
+  twitterTitle     String?
+  twitterDescription String?
+  twitterImage     String?
+  twitterCard      String?
   socialFacebook   Boolean    @default(false)
   socialInstagram  Boolean    @default(false)
   socialLinkedin   Boolean    @default(false)
   socialTwitter    Boolean    @default(false)
+  relatedPostIds   String[]   @default([])
+  isFeatured       Boolean    @default(false)
   status           PostStatus @default(draft)
+  workflowStatus   WorkflowStatus @default(draft)
+  approvalNotes    String?
+  scheduledFor     DateTime?
   publishDate      DateTime?
   publishedAt      DateTime?
+  archivedAt       DateTime?
+  lastAutoSavedAt  DateTime?
+  assignedAuthorId String?
+  authorId         String?
+  viewCount        Int        @default(0)
+  likeCount        Int        @default(0)
+  commentCount     Int        @default(0)
+  referralSources  Json?
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
+
+  author           AdminUser? @relation(fields: [authorId], references: [id])
+  assignedAuthor   AdminUser? @relation("AssignedAuthor", fields: [assignedAuthorId], references: [id])
+  revisions        PostRevision[]
+
+  @@index([status, archivedAt])
+  @@index([workflowStatus])
+  @@index([category])
+  @@index([publishedAt])
+}
+
+model PostRevision {
+  id               String   @id @default(cuid())
+  postId           String
+  title            String
+  excerpt          String?
+  subheading       String?
+  slug             String
+  category         String
+  tags             String[] @default([])
+  content          String
+  contentFormat    ContentFormat @default(html)
+  markdownContent  String?
+  metaTitle        String?
+  metaDescription  String?
+  canonicalUrl     String?
+  ogTitle          String?
+  ogDescription    String?
+  ogImage          String?
+  twitterTitle     String?
+  twitterDescription String?
+  twitterImage     String?
+  twitterCard      String?
+  socialFacebook   Boolean @default(false)
+  socialInstagram  Boolean @default(false)
+  socialLinkedin   Boolean @default(false)
+  socialTwitter    Boolean @default(false)
+  relatedPostIds   String[] @default([])
+  isFeatured       Boolean @default(false)
+  status           PostStatus @default(draft)
+  workflowStatus   WorkflowStatus @default(draft)
+  publishDate      DateTime?
+  scheduledFor     DateTime?
+  revisionNote     String?
+  createdById      String?
+  createdAt        DateTime @default(now())
+
+  post             Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
 }
 
 model NewsletterSubscriber {

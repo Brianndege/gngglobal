@@ -6,10 +6,18 @@ import PostEditorForm from "@/components/admin/PostEditorForm";
 import { getAdminAuthHeaders, getAdminToken } from "@/lib/adminAuth";
 import { CmsPost, getCmsApiBaseUrl } from "@/lib/cms";
 
+interface CmsRevision {
+  _id: string;
+  createdAt: string;
+  revisionNote?: string;
+}
+
 export default function AdminEditPostPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const [post, setPost] = useState<CmsPost | null>(null);
+  const [revisions, setRevisions] = useState<CmsRevision[]>([]);
+  const [canPublish, setCanPublish] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,8 +39,10 @@ export default function AdminEditPostPage() {
           throw new Error("Post not found");
         }
 
-        const data = (await response.json()) as { post: CmsPost };
+        const data = (await response.json()) as { post: CmsPost; revisions?: CmsRevision[]; permissions?: { canPublish?: boolean } };
         setPost(data.post);
+        setRevisions(data.revisions || []);
+        setCanPublish(Boolean(data.permissions?.canPublish ?? true));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load post");
       } finally {
@@ -53,7 +63,7 @@ export default function AdminEditPostPage() {
         ) : error ? (
           <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-6 text-destructive">{error}</div>
         ) : post ? (
-          <PostEditorForm mode="edit" initialPost={post} />
+          <PostEditorForm mode="edit" initialPost={post} initialRevisions={revisions} canPublish={canPublish} />
         ) : null}
       </div>
     </main>

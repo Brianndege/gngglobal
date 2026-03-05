@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     }
 
     const token = sign(
-      { sub: admin.id, email: admin.email, role: "admin" },
+      { sub: admin.id, email: admin.email, role: admin.role },
       secret,
       { expiresIn: (process.env.JWT_EXPIRES_IN || "1d") as SignOptions["expiresIn"] }
     );
@@ -42,6 +42,7 @@ export async function POST(request: Request) {
         id: admin.id,
         email: admin.email,
         name: admin.name,
+        role: admin.role,
       },
     });
   } catch (error) {

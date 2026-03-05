@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 export interface AdminJwtPayload {
   sub: string;
   email: string;
-  role: "admin";
+  role: "admin" | "editor";
 }
 
 export function getBearerToken(request: NextRequest) {

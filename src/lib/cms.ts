@@ -1,25 +1,57 @@
 export interface CmsPost {
   _id: string;
   title: string;
+  excerpt?: string;
   subheading?: string;
   slug: string;
   category: string;
+  tags?: string[];
   featuredImage?: {
     url?: string;
     alt?: string;
   };
+  mediaLibrary?: Array<{
+    url: string;
+    alt?: string;
+    uploadedAt?: string;
+  }>;
   content: string;
+  contentFormat?: "html" | "markdown";
+  markdownContent?: string;
   metaTitle?: string;
   metaDescription?: string;
+  canonicalUrl?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+  twitterCard?: string;
   socialChannels?: {
     facebook?: boolean;
     instagram?: boolean;
     linkedin?: boolean;
     twitter?: boolean;
   };
+  relatedPostIds?: string[];
+  isFeatured?: boolean;
   status: "draft" | "published";
+  workflowStatus?: "draft" | "review" | "approved" | "rejected" | "published" | "archived";
+  approvalNotes?: string;
+  scheduledFor?: string;
   publishDate?: string;
   publishedAt?: string;
+  archivedAt?: string;
+  lastAutoSavedAt?: string;
+  assignedAuthorId?: string;
+  authorId?: string;
+  analytics?: {
+    views: number;
+    likes: number;
+    comments: number;
+    referralSources?: Record<string, number>;
+  };
   createdAt: string;
   updatedAt: string;
 }

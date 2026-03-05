@@ -37,3 +37,29 @@ export function parseDate(value: unknown) {
   const date = new Date(String(value));
   return Number.isNaN(date.getTime()) ? null : date;
 }
+
+export function parseCsvList(value: unknown) {
+  return String(value || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+export function markdownToHtml(value: string) {
+  const escaped = String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  return escaped
+    .replace(/^###\s+(.*)$/gm, "<h3>$1</h3>")
+    .replace(/^##\s+(.*)$/gm, "<h2>$1</h2>")
+    .replace(/^#\s+(.*)$/gm, "<h1>$1</h1>")
+    .replace(/```([\s\S]*?)```/g, (_match, code) => `<pre><code>${code.trim()}</code></pre>`)
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    .replace(/\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(/\n\n+/g, "</p><p>")
+    .replace(/^/, "<p>")
+    .replace(/$/, "</p>");
+}

@@ -1,25 +1,26 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import EnhancedNavigation from "@/components/EnhancedNavigation";
 import Footer from "@/components/Footer";
 import { primaryNavItems } from "@/lib/site";
-import { fetchPublishedPostBySlug, getCmsApiBaseUrl } from "@/lib/cms";
+import { fetchPublishedPostBySlug, fetchPublishedPosts } from "@/lib/cms";
+import NewsPostEnhancements from "@/components/news/NewsPostEnhancements";
+import { getBreadcrumbJsonLd, stringifyJsonLd } from "@/lib/seo";
+import { siteConfig } from "@/lib/site";
+import { getTrendingScore } from "@/lib/blog";
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
 }
 
-function formatDate(value?: string) {
-  if (!value) return "";
+export const revalidate = 300;
 
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-
-  return date.toLocaleDateString("en-AU", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+export async function generateStaticParams() {
+  try {
+    const data = await fetchPublishedPosts({ page: 1, limit: 100 });
+    return data.posts.map((post) => ({ slug: post.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
@@ -42,40 +43,64 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
 export default async function NewsPostPage({ params }: PostPageProps) {
   const { slug } = await params;
   const post = await fetchPublishedPostBySlug(slug);
-  const cmsBase = getCmsApiBaseUrl();
+  const allPosts = (await fetchPublishedPosts({ page: 1, limit: 100 })).posts.filter((item) => item.slug !== slug);
+
+  const relatedPosts = allPosts
+    .filter((item) => item.category === post.category)
+    .slice(0, 4);
+
+  const recommendedPosts = allPosts
+    .filter((item) => item.category !== post.category)
+    .sort((a, b) => getTrendingScore(b) - getTrendingScore(a))
+    .slice(0, 4);
+
+  const breadcrumbJsonLd = stringifyJsonLd(getBreadcrumbJsonLd([
+    { name: "Home", item: `${siteConfig.url}/` },
+    { name: "News", item: `${siteConfig.url}/news` },
+    { name: post.title, item: `${siteConfig.url}/news/${post.slug}` },
+  ]));
+
+  const articleJsonLd = stringifyJsonLd({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.metaTitle || post.title,
+    description: post.metaDescription || post.subheading || post.title,
+    articleSection: post.category,
+    datePublished: post.publishedAt || post.publishDate || post.createdAt,
+    dateModified: post.updatedAt,
+    mainEntityOfPage: `${siteConfig.url}/news/${post.slug}`,
+    author: {
+      "@type": "Organization",
+      name: siteConfig.name,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    image: post.featuredImage?.url || undefined,
+    keywords: [post.category],
+  });
 
   return (
     <div className="min-h-screen flex flex-col bg-ivory-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: articleJsonLd }}
+      />
+
       <EnhancedNavigation items={primaryNavItems} />
 
       <main id="main-content" className="flex-grow pt-28 md:pt-32 pb-20">
-        <article className="container mx-auto px-6 max-w-4xl">
-          <Link href="/news" className="inline-flex items-center text-sm font-semibold text-navy-700 hover:text-navy-900 mb-8">
-            ← Back to News
-          </Link>
-
-          <header className="mb-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-gold mb-3">{post.category}</p>
-            <h1 className="font-playfair text-4xl md:text-5xl font-bold text-navy-800 leading-tight mb-4">{post.title}</h1>
-            {post.subheading && <p className="text-xl text-charcoal-700 leading-relaxed mb-4">{post.subheading}</p>}
-            <p className="text-sm text-charcoal-500">{formatDate(post.publishedAt || post.createdAt)}</p>
-          </header>
-
-          {post.featuredImage?.url && (
-            <div className="mb-10 rounded-lg overflow-hidden border border-ivory-300 bg-white shadow-sm">
-              <img
-                src={post.featuredImage.url.startsWith("/") ? `${cmsBase}${post.featuredImage.url}` : post.featuredImage.url}
-                alt={post.featuredImage.alt || post.title}
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          )}
-
-          <div
-            className="prose prose-slate max-w-none prose-headings:font-playfair prose-headings:text-navy-800 prose-p:text-charcoal-700 prose-a:text-navy-700 hover:prose-a:text-navy-900"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-        </article>
+        <NewsPostEnhancements
+          post={post}
+          relatedPosts={relatedPosts}
+          recommendedPosts={recommendedPosts}
+        />
       </main>
 
       <Footer />

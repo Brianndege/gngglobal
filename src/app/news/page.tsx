@@ -5,15 +5,43 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { primaryNavItems } from "@/lib/site";
 import NewsClientContent from "@/components/news/NewsClientContent";
 import NewsletterSignup from "@/components/news/NewsletterSignup";
+import { fetchPublishedPosts } from "@/lib/cms";
+import { siteConfig } from "@/lib/site";
+import { stringifyJsonLd } from "@/lib/seo";
 
 export const metadata = {
   title: "News & Media - GNG Global Investment Group",
   description: "Latest insights, updates, and thought leadership from GNG Global Investment Group.",
 };
 
-export default function NewsPage() {
+export const revalidate = 300;
+
+export default async function NewsPage() {
+  const initialData = await fetchPublishedPosts({ page: 1, limit: 8 });
+  const collectionJsonLd = stringifyJsonLd({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "News & Insights",
+    url: `${siteConfig.url}/news`,
+    description: "Latest insights, updates, and thought leadership from GNG Global Investment Group.",
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: initialData.posts.map((post, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: `${siteConfig.url}/news/${post.slug}`,
+        name: post.title,
+      })),
+    },
+  });
+
   return (
     <div className="premium-site-shell">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: collectionJsonLd }}
+      />
+
       <EnhancedNavigation items={primaryNavItems} />
 
       <main id="main-content" className="premium-page-main">
@@ -25,7 +53,7 @@ export default function NewsPage() {
           height="md"
         />
 
-        <NewsClientContent />
+        <NewsClientContent initialData={initialData} />
 
         {/* Newsletter Signup */}
         <section className="py-20 md:py-28 section-premium-dark section-premium-dark--tempered text-white">

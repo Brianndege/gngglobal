@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Calendar, Tag, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { Calendar, Tag, ArrowRight, Flame, Search, Filter, Compass } from "lucide-react";
 import { ScrollReveal, StaggeredGrid } from "@/components/ScrollReveal";
 import { CmsPost, getCmsApiBaseUrl } from "@/lib/cms";
+import { extractTags, getPostImageUrl, getReadingTimeMinutes, getTrendingScore, stripHtml } from "@/lib/blog";
 
 interface NewsApiResponse {
   posts: CmsPost[];
@@ -16,6 +18,10 @@ interface NewsApiResponse {
     totalPages: number;
     hasMore: boolean;
   };
+}
+
+interface NewsClientContentProps {
+  initialData?: NewsApiResponse;
 }
 
 function formatDate(value?: string) {
@@ -34,17 +40,19 @@ function formatDate(value?: string) {
 function excerpt(post: CmsPost) {
   if (post.subheading?.trim()) return post.subheading;
 
-  const plainText = post.content.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+  const plainText = stripHtml(post.content);
   return plainText.slice(0, 220) + (plainText.length > 220 ? "…" : "");
 }
 
-export default function NewsClientContent() {
+export default function NewsClientContent({ initialData }: NewsClientContentProps) {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [posts, setPosts] = useState<CmsPost[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [selectedTag, setSelectedTag] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [posts, setPosts] = useState<CmsPost[]>(initialData?.posts || []);
+  const [categories, setCategories] = useState<string[]>(initialData ? ["All", ...initialData.categories] : []);
+  const [page, setPage] = useState(initialData?.pagination.page || 1);
+  const [hasMore, setHasMore] = useState(initialData?.pagination.hasMore || false);
+  const [isLoading, setIsLoading] = useState(!initialData);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,10 +73,19 @@ export default function NewsClientContent() {
     setHasMore(data.pagination.hasMore);
     setPage(nextPage);
 
-    setPosts((previous) => (replace ? data.posts : [...previous, ...data.posts]));
+    setPosts((previous) => {
+      if (replace) return data.posts;
+      const map = new Map<string, CmsPost>();
+      [...previous, ...data.posts].forEach((post) => map.set(post._id, post));
+      return Array.from(map.values());
+    });
   }, [baseUrl, selectedCategory]);
 
   useEffect(() => {
+    if (initialData && selectedCategory === "All") {
+      return;
+    }
+
     let mounted = true;
 
     async function run() {
@@ -88,16 +105,92 @@ export default function NewsClientContent() {
     return () => {
       mounted = false;
     };
-  }, [loadPosts]);
+  }, [initialData, loadPosts, selectedCategory]);
 
-  const featuredArticle = posts[0];
-  const newsItems = posts.slice(1);
+  const tags = useMemo(() => {
+    const allTags = posts.flatMap((post) => extractTags(post));
+    return ["All", ...Array.from(new Set(allTags)).slice(0, 12)];
+  }, [posts]);
+
+  const searchResults = useMemo(() => {
+    const normalizedTerm = searchTerm.trim().toLowerCase();
+    return posts.filter((post) => {
+      const matchesTag = selectedTag === "All" || extractTags(post).includes(selectedTag);
+      if (!normalizedTerm) return matchesTag;
+
+      const haystack = `${post.title} ${post.subheading || ""} ${post.metaDescription || ""} ${post.category} ${stripHtml(post.content)}`.toLowerCase();
+      return matchesTag && haystack.includes(normalizedTerm);
+    });
+  }, [posts, searchTerm, selectedTag]);
+
+  const rankedPosts = useMemo(() => {
+    return [...searchResults].sort((a, b) => getTrendingScore(b) - getTrendingScore(a));
+  }, [searchResults]);
+
+  const featuredArticle = rankedPosts[0];
+  const trendingPosts = rankedPosts.slice(0, 3);
+  const recommendedPosts = rankedPosts.slice(3, 6);
+  const newsItems = rankedPosts.slice(1);
+
+  function renderPostImage(post: CmsPost, className: string, priority?: boolean) {
+    const imageUrl = getPostImageUrl(post, baseUrl);
+
+    if (!imageUrl) {
+      return <div className={`w-full h-full bg-gradient-to-br from-navy-900 to-charcoal-900 ${className}`} />;
+    }
+
+    return (
+      <Image
+        src={imageUrl}
+        alt={post.featuredImage?.alt || post.title}
+        fill
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        className={`object-cover group-hover:scale-105 transition-transform duration-700 ${className}`}
+        priority={Boolean(priority)}
+      />
+    );
+  }
 
   return (
     <>
+      <section className="pt-10 pb-4 section-premium-light">
+        <div className="container mx-auto px-6">
+          <div className="max-w-7xl mx-auto">
+            <nav className="text-sm text-charcoal-600" aria-label="Breadcrumb">
+              <ol className="flex items-center gap-2">
+                <li><Link href="/" className="hover:text-navy-800">Home</Link></li>
+                <li>/</li>
+                <li className="text-navy-800 font-semibold">News</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </section>
+
       <section className="py-20 md:py-28 section-premium-light">
         <div className="container mx-auto px-6">
           <div className="max-w-7xl mx-auto">
+            <ScrollReveal direction="up">
+              <div className="mb-10 rounded-xl border border-ivory-300 bg-white/90 p-6 shadow-sm">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="md:col-span-2 relative">
+                    <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-500" />
+                    <input
+                      type="search"
+                      value={searchTerm}
+                      onChange={(event) => setSearchTerm(event.target.value)}
+                      placeholder="Search by title, topic, or keyword"
+                      className="w-full rounded-md border border-ivory-400 bg-white pl-11 pr-4 py-3 text-sm text-charcoal-700 focus:outline-none focus:ring-2 focus:ring-navy-700"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 rounded-md border border-ivory-400 bg-ivory-50 px-4 py-3 text-sm text-charcoal-700">
+                    <Filter className="w-4 h-4 text-navy-700" />
+                    <span>{rankedPosts.length} posts match your filters</span>
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+
             <ScrollReveal direction="up">
               <div className="mb-12">
                 <div className="inline-block mb-6">
@@ -117,15 +210,7 @@ export default function NewsClientContent() {
                     <div className="grid lg:grid-cols-5 gap-0">
                       <div className="lg:col-span-3 relative h-96 lg:h-auto overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-br from-navy-900/60 via-navy-900/40 to-transparent z-10" />
-                        {featuredArticle.featuredImage?.url ? (
-                          <img
-                            src={featuredArticle.featuredImage.url}
-                            alt={featuredArticle.featuredImage.alt || featuredArticle.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-navy-900 to-charcoal-900" />
-                        )}
+                        {renderPostImage(featuredArticle, "", true)}
                         <div className="absolute top-6 left-6 z-20">
                           <div className="inline-flex items-center gap-2 bg-gold/95 backdrop-blur-sm text-navy-900 px-4 py-2 rounded-full">
                             <Tag className="w-4 h-4" />
@@ -146,6 +231,8 @@ export default function NewsClientContent() {
 
                         <p className="font-inter text-lg text-charcoal-700 leading-relaxed mb-8">{excerpt(featuredArticle)}</p>
 
+                        <p className="text-xs text-charcoal-500 mb-6">{getReadingTimeMinutes(featuredArticle.content)} min read</p>
+
                         <div className="flex items-center text-gold group-hover:text-gold-700 font-semibold">
                           <span>Read Full Article</span>
                           <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -164,6 +251,35 @@ export default function NewsClientContent() {
         </div>
       </section>
 
+      {!isLoading && trendingPosts.length > 0 && (
+        <section className="pb-16 section-premium-light">
+          <div className="container mx-auto px-6">
+            <div className="max-w-7xl mx-auto">
+              <ScrollReveal direction="up">
+                <div className="flex items-center gap-2 mb-6 text-navy-800">
+                  <Flame className="w-5 h-5 text-gold" />
+                  <h2 className="font-playfair text-3xl font-bold">Trending Now</h2>
+                </div>
+              </ScrollReveal>
+
+              <StaggeredGrid pattern="diagonal" className="grid md:grid-cols-3 gap-6">
+                {trendingPosts.map((post) => (
+                  <Link href={`/news/${post.slug}`} key={post._id} className="group rounded-lg border border-ivory-300 bg-white shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <div className="relative h-44 overflow-hidden">
+                      {renderPostImage(post, "")}
+                    </div>
+                    <div className="p-5">
+                      <p className="text-xs text-charcoal-500 mb-2">{formatDate(post.publishedAt || post.createdAt)}</p>
+                      <h3 className="font-playfair text-xl font-bold text-navy-800 group-hover:text-navy-900 line-clamp-2">{post.title}</h3>
+                    </div>
+                  </Link>
+                ))}
+              </StaggeredGrid>
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className="py-8 section-premium-neutral border-y border-ivory-300/70">
         <div className="container mx-auto px-6">
           <div className="max-w-7xl mx-auto">
@@ -172,7 +288,10 @@ export default function NewsClientContent() {
                 {categories.map((category) => (
                   <button
                     key={category}
-                    onClick={() => setSelectedCategory(category)}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setSelectedTag("All");
+                    }}
                     className={`px-6 py-2 rounded-full font-inter text-sm font-medium transition-all duration-300 ${
                       category === selectedCategory
                         ? "bg-navy-800 text-white"
@@ -180,6 +299,24 @@ export default function NewsClientContent() {
                     }`}
                   >
                     {category}
+                  </button>
+                ))}
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal direction="up" delay={0.1}>
+              <div className="flex flex-wrap gap-3 justify-center mt-5">
+                {tags.map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => setSelectedTag(tag)}
+                    className={`px-4 py-1.5 rounded-full font-inter text-xs font-semibold transition-all duration-300 ${
+                      tag === selectedTag
+                        ? "bg-gold text-navy-900"
+                        : "bg-white text-charcoal-700 hover:bg-gold hover:text-navy-900 border border-charcoal-300"
+                    }`}
+                  >
+                    #{tag}
                   </button>
                 ))}
               </div>
@@ -210,15 +347,7 @@ export default function NewsClientContent() {
                       <div className="group bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-ivory-300 h-full">
                         <div className="relative h-64 overflow-hidden">
                           <div className="absolute inset-0 bg-gradient-to-t from-navy-900/80 via-navy-900/20 to-transparent z-10" />
-                          {article.featuredImage?.url ? (
-                            <img
-                              src={article.featuredImage.url}
-                              alt={article.featuredImage.alt || article.title}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-navy-900 to-charcoal-900" />
-                          )}
+                          {renderPostImage(article, "group-hover:scale-110")}
                           <div className="absolute top-4 left-4 z-20">
                             <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-sm text-navy-900 px-3 py-1.5 rounded-full">
                               <Tag className="w-3 h-3" />
@@ -240,6 +369,8 @@ export default function NewsClientContent() {
 
                           <p className="font-inter text-charcoal-600 leading-relaxed mb-6 line-clamp-3">{excerpt(article)}</p>
 
+                          <p className="text-xs text-charcoal-500 mb-5">{getReadingTimeMinutes(article.content)} min read</p>
+
                           <div className="flex items-center text-gold group-hover:text-gold-700 font-semibold text-sm">
                             <span>Read More</span>
                             <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -250,6 +381,29 @@ export default function NewsClientContent() {
                   </div>
                 ))}
               </StaggeredGrid>
+            )}
+
+            {!isLoading && recommendedPosts.length > 0 && (
+              <ScrollReveal direction="up" delay={0.2}>
+                <div className="mt-20 rounded-xl border border-ivory-300 bg-white p-8 shadow-sm">
+                  <div className="flex items-center gap-2 mb-6 text-navy-800">
+                    <Compass className="w-5 h-5 text-gold" />
+                    <h3 className="font-playfair text-3xl font-bold">Recommended For You</h3>
+                  </div>
+                  <div className="grid md:grid-cols-3 gap-5">
+                    {recommendedPosts.map((post) => (
+                      <Link
+                        key={post._id}
+                        href={`/news/${post.slug}`}
+                        className="rounded-md border border-ivory-300 p-4 hover:border-navy-400 hover:bg-ivory-100/60 transition-all"
+                      >
+                        <p className="text-xs text-charcoal-500 mb-2">{post.category}</p>
+                        <h4 className="font-inter text-sm font-semibold text-navy-800 line-clamp-2">{post.title}</h4>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </ScrollReveal>
             )}
 
             {hasMore && !error && (
